@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>کلاؤڈ نوٹ - آرننگ پلیٹ فارم</title>
+    <title>CloudNote - پروفیشنل ارننگ پلیٹ فارم</title>
     <style>
         :root {
-            --bg-color: #050b08;
-            --card-bg: #0d1a12;
+            --bg-color: #030705;
+            --card-bg: #0b1710;
             --card-border: #13331f;
             --neon-green: #00ff66;
             --neon-glow: rgba(0, 255, 102, 0.25);
-            --text-main: #e0f2fe;
-            --text-muted: #94a3b8;
-            --accent-green: #10b981;
+            --text-main: #e2f8f0;
+            --text-muted: #8fa99b;
         }
 
         * {
@@ -31,7 +30,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            background-image: radial-gradient(circle at 50% 20%, #062412 0%, #050b08 70%);
+            background-image: radial-gradient(circle at 50% 10%, #062412 0%, #030705 80%);
         }
 
         .container {
@@ -39,17 +38,29 @@
             max-width: 480px;
         }
 
-        .card {
+        /* ہر صفحہ ایک خوبصورت کارڈ کی شکل میں الگ کھلے گا */
+        .page-box {
+            display: none;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             padding: 30px 25px;
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--neon-glow);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 25px var(--neon-glow);
             position: relative;
             overflow: hidden;
+            animation: fadeIn 0.4s ease-in-out;
         }
 
-        .card::before {
+        .page-box.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-box::before {
             content: '';
             position: absolute;
             top: 0;
@@ -80,11 +91,11 @@
             font-size: 14px;
         }
 
-        input, textarea, select {
+        input {
             width: 100%;
             padding: 12px 15px;
-            background: #07130c;
-            border: 1px solid #1a3c27;
+            background: #050d08;
+            border: 1px solid #163823;
             border-radius: 10px;
             color: #fff;
             font-size: 15px;
@@ -92,14 +103,14 @@
             transition: all 0.3s ease;
         }
 
-        input:focus, textarea:focus {
+        input:focus {
             border-color: var(--neon-green);
             box-shadow: 0 0 10px var(--neon-glow);
         }
 
         .btn {
             background: linear-gradient(135deg, #00b347, var(--neon-green));
-            color: #050b08;
+            color: #030705;
             border: none;
             width: 100%;
             padding: 14px;
@@ -111,7 +122,6 @@
             margin-top: 10px;
             box-shadow: 0 0 15px var(--neon-glow);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .btn:hover {
@@ -132,59 +142,49 @@
             margin-top: 15px;
         }
 
-        .view-section {
-            display: none;
-        }
-
-        .active-view {
-            display: block;
-        }
-
-        .balance-box {
-            background: #07130c;
-            border: 1px solid #1a3c27;
-            padding: 20px;
-            border-radius: 14px;
-            margin-bottom: 20px;
+        .info-box {
+            background: #050d08;
+            border: 1px solid #163823;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
             text-align: center;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
         }
 
-        .balance-title {
-            font-size: 13px;
+        .info-title {
+            font-size: 12px;
             color: var(--text-muted);
             margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        .balance-amount {
-            font-size: 32px;
+        .info-value {
+            font-size: 26px;
             font-weight: bold;
             color: var(--neon-green);
             text-shadow: 0 0 10px var(--neon-glow);
         }
 
-        .section-box {
-            background: #07130c;
-            border: 1px solid #1a3c27;
-            padding: 15px;
+        .content-section {
+            background: #050d08;
+            border: 1px solid #163823;
+            padding: 16px;
             border-radius: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
-        .section-box h3 {
+        .content-section h3 {
             font-size: 15px;
             color: var(--neon-green);
             margin-bottom: 10px;
         }
 
-        .copy-row {
+        .row-flex {
             display: flex;
             gap: 8px;
         }
 
-        .small-btn {
+        .action-btn {
             background: #10b981;
             color: #fff;
             border: none;
@@ -194,14 +194,9 @@
             cursor: pointer;
             white-space: nowrap;
             font-weight: bold;
-            transition: background 0.2s;
         }
 
-        .small-btn:hover {
-            background: #059669;
-        }
-
-        .admin-badge {
+        .admin-tag {
             background: rgba(245, 158, 11, 0.15);
             border: 1px solid #f59e0b;
             color: #f59e0b;
@@ -213,10 +208,10 @@
             font-weight: bold;
         }
 
-        .chat-container {
-            max-height: 140px;
+        .chat-box {
+            max-height: 130px;
             overflow-y: auto;
-            background: #050b08;
+            background: #030705;
             border: 1px solid #13331f;
             border-radius: 8px;
             padding: 10px;
@@ -225,14 +220,14 @@
             text-align: right;
         }
 
-        .chat-msg {
+        .chat-line {
             margin-bottom: 6px;
             padding: 6px 10px;
             border-radius: 6px;
-            background: #0d1a12;
+            background: #0b1710;
         }
 
-        .toggle-link {
+        .switch-text {
             text-align: center;
             margin-top: 15px;
             font-size: 13px;
@@ -240,7 +235,7 @@
             cursor: pointer;
         }
 
-        .toggle-link span {
+        .switch-text span {
             color: var(--neon-green);
             text-decoration: underline;
         }
@@ -250,23 +245,23 @@
 
     <div class="container">
         
-        <!-- لاگ ان سکرین -->
-        <div id="loginSection" class="card active-view">
-            <h1>کلاؤڈ نوٹ - لاگ ان</h1>
+        <!-- صفحه 1: لاگ ان کا صفحہ -->
+        <div id="pageLogin" class="page-box active">
+            <h1>CloudNote - لاگ ان</h1>
             <div class="form-group">
                 <label>ای میل ایڈریس</label>
                 <input type="email" id="loginEmail" placeholder="example@gmail.com">
             </div>
             <div class="form-group">
                 <label>پاسورڈ</label>
-                <input type="password" id="loginPass" placeholder="اپنا پاسورڈ درج کریں">
+                <input type="password" id="loginPass" placeholder="پاسورڈ درج کریں">
             </div>
-            <button class="btn" onclick="handleLogin()">لاگ ان کریں</button>
-            <div class="toggle-link" onclick="switchAuthMode()">اکاؤنٹ نہیں ہے؟ <span>سائن اپ کریں</span></div>
+            <button class="btn" onclick="processLogin()">لاگ ان کریں</button>
+            <div class="switch-text" onclick="goToPage('pageSignup')">اکاؤنٹ نہیں ہے؟ <span>نیا اکاؤنٹ بنائیں</span></div>
         </div>
 
-        <!-- سائن اپ سکرین -->
-        <div id="signupSection" class="card view-section">
+        <!-- صفحه 2: سائن اپ کا صفحہ -->
+        <div id="pageSignup" class="page-box">
             <h1>نیا اکاؤنٹ بنائیں</h1>
             <div class="form-group">
                 <label>نام</label>
@@ -277,125 +272,122 @@
                 <input type="email" id="signupEmail" placeholder="example@gmail.com">
             </div>
             <div class="form-group">
-                <label>نیا پاسورڈ</label>
+                <label>پاسورڈ</label>
                 <input type="password" id="signupPass" placeholder="مضبوط پاسورڈ بنائیں">
             </div>
-            <button class="btn" onclick="handleSignup()">اکاؤنٹ رجسٹر کریں</button>
-            <div class="toggle-link" onclick="switchAuthMode()">پہلے سے اکاؤنٹ ہے؟ <span>لاگ ان کریں</span></div>
+            <button class="btn" onclick="processSignup()">رجسٹر کریں</button>
+            <div class="switch-text" onclick="goToPage('pageLogin')">پہلے سے اکاؤنٹ ہے؟ <span>لاگ ان کریں</span></div>
         </div>
 
-        <!-- یوزر ڈیش بورڈ -->
-        <div id="userDashboard" class="card view-section">
+        <!-- صفحه 3: یوزر ڈیش بورڈ (علیحدہ صاف صفحہ) -->
+        <div id="pageUserDashboard" class="page-box">
             <h1>یوزر ڈیش بورڈ</h1>
             
-            <div class="balance-box">
-                <div class="balance-title">موجودہ بیلنس</div>
-                <div class="balance-amount" id="userBalance">$30.00</div>
+            <div class="info-box">
+                <div class="info-title">موجودہ بیلنس</div>
+                <div class="info-value">$30.00</div>
             </div>
 
-            <div class="section-box">
+            <div class="content-section">
                 <h3>آپ کا ریفرل لنک</h3>
-                <div class="copy-row">
+                <div class="row-flex">
                     <input type="text" id="userRefLink" readonly>
-                    <button class="small-btn" onclick="copyText('userRefLink', 'ریفرل لنک کاپی ہو گیا!')">کاپی</button>
+                    <button class="action-btn" onclick="copyText('userRefLink', 'ریفرل لنک کاپی ہو گیا!')">کاپی</button>
                 </div>
             </div>
 
-            <div class="section-box">
-                <h3>بائنانس انویسٹمنٹ ایڈریس (USDT)</h3>
-                <div class="copy-row">
+            <div class="content-section">
+                <h3>بائنانس انویسٹمنٹ ایڈریس</h3>
+                <div class="row-flex">
                     <input type="text" id="displayInvestAddress" readonly>
-                    <button class="small-btn" onclick="copyText('displayInvestAddress', 'انویسٹمنٹ ایڈریس کاپی ہو گیا!')">کاپی</button>
+                    <button class="action-btn" onclick="copyText('displayInvestAddress', 'ایڈریس کاپی ہو گیا!')">کاپی</button>
                 </div>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">اس ایڈریس پر فنڈز بھیج کر اپنی انویسٹمنٹ مکمل کریں۔</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">اس ایڈریس پر فنڈز بھیج کر انویسٹمنٹ مکمل کریں۔</p>
             </div>
 
-            <div class="section-box">
+            <div class="content-section">
                 <h3>ودড্রال (Binance / OKX)</h3>
                 <div class="form-group" style="margin-bottom: 8px;">
-                    <label style="font-size: 12px;">اپنا والٹ ایڈریس درج کریں</label>
-                    <input type="text" id="userWithdrawAddr" placeholder="مثلاً: TTheYourWalletAddress...">
+                    <label style="font-size: 12px;">اپنا والٹ ایڈریس لکھیں</label>
+                    <input type="text" id="userWithdrawAddr" placeholder="TTheWalletAddress...">
                 </div>
-                <button class="small-btn" style="width: 100%; padding: 10px; font-size: 14px;" onclick="requestWithdrawal()">ودড্রال کی درخواست بھیجیں</button>
+                <button class="action-btn" style="width: 100%; padding: 11px;" onclick="submitWithdraw()">ودড্রال کی درخواست بھیجیں</button>
             </div>
 
-            <div class="section-box">
-                <h3>ایڈمن کے ساتھ رابطہ (لائیو چیٹ)</h3>
-                <div class="chat-container" id="userChatBox">
-                    <div class="chat-msg"><b>ایڈمن:</b> خوش آمدید! آپ کو کوئی بھی مسئلہ ہو تو یہاں میسج کریں۔</div>
+            <div class="content-section">
+                <h3>ایڈمن کے ساتھ لائیو چیٹ</h3>
+                <div class="chat-box" id="userChatContainer">
+                    <div class="chat-line"><b>ایڈمن:</b> خوش آمدید! کوئی بھی بات پوچھنی ہو تو یہاں میسج کریں۔</div>
                 </div>
-                <div class="copy-row">
-                    <input type="text" id="userMsgInput" placeholder="اپنا پیغام یہاں لکھیں...">
-                    <button class="small-btn" onclick="sendUserMessage()">بھیجیں</button>
+                <div class="row-flex">
+                    <input type="text" id="userMsgText" placeholder="پیغام لکھیں...">
+                    <button class="action-btn" onclick="sendUserMsg()">بھیجیں</button>
                 </div>
             </div>
 
-            <button class="btn btn-danger" onclick="logout()">لاگ آؤٹ کریں</button>
+            <button class="btn btn-danger" onclick="logoutSystem()">لاگ آؤٹ کریں</button>
         </div>
 
-        <!-- ایڈمن ڈیش بورڈ (صرف آپ کے لیے) -->
-        <div id="adminDashboard" class="card view-section">
-            <div class="admin-badge">⭐ ایڈمن کنٹرول پینل (صرف اونر کے لیے) ⭐</div>
+        <!-- صفحه 4: ایڈمن کنٹرول پینل (صرف آپ کا الگ خاص صفحہ) -->
+        <div id="pageAdminDashboard" class="page-box">
+            <div class="admin-tag">⭐ ایڈمن کنٹرول پینل (صرف آپ کے لیے) ⭐</div>
             <h1>ایڈمن مینجمنٹ</h1>
 
-            <div class="section-box" style="border-color: #f59e0b;">
+            <div class="content-section" style="border-color: #f59e0b;">
                 <h3 style="color: #f59e0b;">بائنانس / انویسٹمنٹ ایڈریس تبدیل کریں</h3>
                 <div class="form-group" style="margin-bottom: 8px;">
-                    <label style="font-size: 12px;">نیا کرپٹو والٹ ایڈریس درج کریں</label>
-                    <input type="text" id="adminNewInvestAddr" placeholder="اپنا نیا بائنانس والٹ ایڈریس لکھیں">
+                    <label style="font-size: 12px;">اپنا نیا کرپٹو والٹ ایڈریس درج کریں</label>
+                    <input type="text" id="adminNewInvestAddr" placeholder="نیا والٹ ایڈریس...">
                 </div>
-                <button class="btn btn-admin" style="margin-top: 5px; padding: 10px;" onclick="saveAdminInvestAddress()">ایڈریس اپ ڈیٹ کریں</button>
+                <button class="btn btn-admin" style="margin-top: 5px; padding: 11px;" onclick="saveAdminInvestAddress()">ایڈریس اپ ڈیٹ کریں</button>
             </div>
 
-            <div class="section-box">
-                <h3>یوزرز کے ودড্রال اور اسٹیٹس</h3>
+            <div class="content-section">
+                <h3>یوزرز کی ودড্রال درخواستیں</h3>
                 <div id="adminWithdrawalsList" style="font-size: 13px; color: var(--text-muted); max-height: 100px; overflow-y: auto;">
-                    کوئی نئی ودড্রال درخواست موصول نہیں ہوئی۔
+                    کوئی نئی درخواست موجود نہیں۔
                 </div>
             </div>
 
-            <div class="section-box">
-                <h3>یوزرز کے پیغامات (لائیو چیٹ)</h3>
-                <div class="chat-container" id="adminChatBox">
-                    <div class="chat-msg">کوئی پیغام موجود نہیں۔</div>
+            <div class="content-section">
+                <h3>یوزرز کے ساتھ لائیو چیٹ</h3>
+                <div class="chat-box" id="adminChatContainer">
+                    <div class="chat-line">کوئی پیغام موجود نہیں۔</div>
                 </div>
-                <div class="copy-row">
-                    <input type="text" id="adminMsgInput" placeholder="جواب لکھیں...">
-                    <button class="small-btn" style="background: #f59e0b;" onclick="sendAdminMessage()">جواب دیں</button>
+                <div class="row-flex">
+                    <input type="text" id="adminMsgText" placeholder="جواب لکھیں...">
+                    <button class="action-btn" style="background: #f59e0b;" onclick="sendAdminMsg()">جواب دیں</button>
                 </div>
             </div>
 
-            <button class="btn btn-danger" onclick="logout()">ایڈمن لاگ آؤٹ</button>
+            <button class="btn btn-danger" onclick="logoutSystem()">ایڈمن لاگ آؤٹ</button>
         </div>
 
     </div>
 
     <script>
+        // ڈیٹا لوکل سٹوریج میں سیٹ کرنا
         if(!localStorage.getItem('adminInvestAddress')) {
             localStorage.setItem('adminInvestAddress', 'TYourBinanceUSDTWalletAddressHere777');
         }
         if(!localStorage.getItem('chatMessages')) {
             localStorage.setItem('chatMessages', JSON.stringify([
-                { sender: 'ایڈمن', text: 'خوش آمدید! آپ کو کوئی بھی مسئلہ ہو تو یہاں میسج کریں۔' }
+                { sender: 'ایڈمن', text: 'خوش آمدید! کوئی بھی بات پوچھنی ہو تو یہاں میسج کریں۔' }
             ]));
         }
         if(!localStorage.getItem('withdrawRequests')) {
             localStorage.setItem('withdrawRequests', JSON.stringify([]));
         }
 
-        function switchAuthMode() {
-            let loginSec = document.getElementById('loginSection');
-            let signupSec = document.getElementById('signupSection');
-            if(loginSec.classList.contains('active-view')) {
-                loginSec.classList.remove('active-view');
-                signupSec.classList.add('active-view');
-            } else {
-                signupSec.classList.remove('active-view');
-                loginSec.classList.add('active-view');
-            }
+        // صفحات کو تبدیل کرنے کا فنکشن
+        function goToPage(pageId) {
+            document.querySelectorAll('.page-box').forEach(box => {
+                box.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
         }
 
-        function handleSignup() {
+        function processSignup() {
             let name = document.getElementById('signupName').value;
             let email = document.getElementById('signupEmail').value;
             let pass = document.getElementById('signupPass').value;
@@ -403,115 +395,110 @@
                 alert('براہ کرم تمام خانے پُر کریں!');
                 return;
             }
-            localStorage.setItem('registeredUserEmail', email);
-            localStorage.setItem('registeredUserPass', pass);
-            localStorage.setItem('registeredUserName', name);
+            localStorage.setItem('regUser_' + email, JSON.stringify({name, pass}));
             alert('اکاؤنٹ کامیابی سے بن گیا! اب آپ لاگ ان کریں۔');
-            switchAuthMode();
+            goToPage('pageLogin');
         }
 
-        function handleLogin() {
+        function processLogin() {
             let email = document.getElementById('loginEmail').value;
             let pass = document.getElementById('loginPass').value;
 
             if(!email || !pass) {
-                alert('براہ کرم ای میل اور پاسورڈ درج کریں!');
+                alert('ای میل اور پاسورڈ درج کریں!');
                 return;
             }
 
-            // ایڈمن لاگ ان (بطور اونر آپ کا خاص اکاؤنٹ)
+            // اگر آپ خود ایڈمن ای میل اور پاسورڈ سے لاگ ان ہوں گی
             if(email === 'admin@clounode.com' && pass === 'admin1234') {
-                document.getElementById('loginSection').classList.remove('active-view');
-                document.getElementById('adminDashboard').classList.add('active-view');
-                loadAdminData();
+                goToPage('pageAdminDashboard');
+                loadAdminPanelData();
                 return;
             }
 
-            // عام یوزر لاگ ان
-            document.getElementById('loginSection').classList.remove('active-view');
-            document.getElementById('userDashboard').classList.add('active-view');
-            loadUserData(email);
+            // عام یوزر کے لیے الگ صفحہ खुले گا
+            goToPage('pageUserDashboard');
+            loadUserPanelData(email);
         }
 
-        function loadUserData(email) {
-            let refLink = window.location.origin + window.location.pathname + "?ref=" + btoa(email).substring(0, 8);
+        function loadUserPanelData(email) {
+            let refLink = window.location.origin + window.location.pathname + "?ref=" + btoa(email).substring(0, 6);
             document.getElementById('userRefLink').value = refLink;
-            let currentInvest = localStorage.getItem('adminInvestAddress');
-            document.getElementById('displayInvestAddress').value = currentInvest;
-            loadChats();
+            document.getElementById('displayInvestAddress').value = localStorage.getItem('adminInvestAddress');
+            refreshChats();
         }
 
-        function loadAdminData() {
+        function loadAdminPanelData() {
             document.getElementById('adminNewInvestAddr').value = localStorage.getItem('adminInvestAddress');
-            loadAdminWithdrawals();
-            loadChats();
+            refreshAdminWithdrawals();
+            refreshChats();
         }
 
         function saveAdminInvestAddress() {
             let newAddr = document.getElementById('adminNewInvestAddr').value;
             if(!newAddr) {
-                alert('براہ کرم نیا ایڈریس درج کریں!');
+                alert('براہ کرم نیا ایڈریس لکھیں!');
                 return;
             }
             localStorage.setItem('adminInvestAddress', newAddr);
-            alert('بائنانس انویسٹمنٹ ایڈریس کامیابی سے تبدیل کر دیا گیا ہے!');
+            alert('بائنانس والٹ ایڈریس کامیابی سے تبدیل کر دیا گیا ہے!');
         }
 
-        function requestWithdrawal() {
+        function submitWithdraw() {
             let addr = document.getElementById('userWithdrawAddr').value;
             if(!addr) {
-                alert('براہ کرم اپنا والٹ ایڈریس درج کریں!');
+                alert('اپنا والٹ ایڈریس درج کریں!');
                 return;
             }
             let requests = JSON.parse(localStorage.getItem('withdrawRequests'));
-            requests.push({ address: addr, time: new Date().toLocaleDateString(), status: 'پینڈنگ' });
+            requests.push({ address: addr, time: new Date().toLocaleDateString() });
             localStorage.setItem('withdrawRequests', JSON.stringify(requests));
-            alert('ودড্রال کی درخواست کامیابی سے جمع ہو گئی ہے!');
+            alert('ودড্রال کی درخواست ایڈمن کو بھیج دی گئی ہے!');
             document.getElementById('userWithdrawAddr').value = '';
         }
 
-        function loadAdminWithdrawals() {
+        function refreshAdminWithdrawals() {
             let requests = JSON.parse(localStorage.getItem('withdrawRequests'));
             let listDiv = document.getElementById('adminWithdrawalsList');
             if(requests.length === 0) {
-                listDiv.innerHTML = 'کوئی نئی ودড্রال درخواست موصول نہیں ہوئی۔';
+                listDiv.innerHTML = 'کوئی نئی درخواست موجود نہیں۔';
                 return;
             }
             let html = '';
             requests.forEach((req) => {
-                html += `<div style="padding:6px; border-bottom:1px solid #1a3c27;">والٹ: ${req.address} (${req.status})</div>`;
+                html += `<div style="padding:6px; border-bottom:1px solid #163823;">والٹ: ${req.address} (${req.time})</div>`;
             });
             listDiv.innerHTML = html;
         }
 
-        function sendUserMessage() {
-            let msg = document.getElementById('userMsgInput').value;
+        function sendUserMsg() {
+            let msg = document.getElementById('userMsgText').value;
             if(!msg) return;
             let chats = JSON.parse(localStorage.getItem('chatMessages'));
             chats.push({ sender: 'یوزر', text: msg });
             localStorage.setItem('chatMessages', JSON.stringify(chats));
-            document.getElementById('userMsgInput').value = '';
-            loadChats();
+            document.getElementById('userMsgText').value = '';
+            refreshChats();
         }
 
-        function sendAdminMessage() {
-            let msg = document.getElementById('adminMsgInput').value;
+        function sendAdminMsg() {
+            let msg = document.getElementById('adminMsgText').value;
             if(!msg) return;
             let chats = JSON.parse(localStorage.getItem('chatMessages'));
             chats.push({ sender: 'ایڈمن', text: msg });
             localStorage.setItem('chatMessages', JSON.stringify(chats));
-            document.getElementById('adminMsgInput').value = '';
-            loadChats();
+            document.getElementById('adminMsgText').value = '';
+            refreshChats();
         }
 
-        function loadChats() {
+        function refreshChats() {
             let chats = JSON.parse(localStorage.getItem('chatMessages'));
-            let userChatBox = document.getElementById('userChatBox');
-            let adminChatBox = document.getElementById('adminChatBox');
+            let userChatBox = document.getElementById('userChatContainer');
+            let adminChatBox = document.getElementById('adminChatContainer');
             
             let html = '';
             chats.forEach(c => {
-                html += `<div class="chat-msg"><b>${c.sender}:</b> ${c.text}</div>`;
+                html += `<div class="chat-line"><b>${c.sender}:</b> ${c.text}</div>`;
             });
             userChatBox.innerHTML = html;
             adminChatBox.innerHTML = html;
@@ -526,10 +513,8 @@
             alert(successMsg);
         }
 
-        function logout() {
-            document.getElementById('userDashboard').classList.remove('active-view');
-            document.getElementById('adminDashboard').classList.remove('active-view');
-            document.getElementById('loginSection').classList.add('active-view');
+        function logoutSystem() {
+            goToPage('pageLogin');
         }
     </script>
 </body>
