@@ -1,664 +1,329 @@
+from flask import Flask, render_template_string, request, redirect, url_for, session, jsonify
+import os
+
+app = Flask(__name__)
+app.secret_key = 'cfl_secure_admin_key_2026'
+
+# In-memory mock database for demonstration & deployment ease
+users = {
+    "user@cfl.com": {
+        "password": "123",
+        "balance": 0.00,
+        "level": 1,
+        "investments": [] # {id, trx, screenshot, status}
+    }
+}
+
+admin_data = {
+    "wallet_address": "Default_CFL_USDT_Wallet_Address_777",
+    "spin_fixed_amount": 5.00, # Admin controlled wheel winning amount
+    "investments_pending": [],
+    "chat_messages": []
+}
+
+# --- TEMPLATES ---
+
+LOGIN_HTML = """
 <!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CFL - کرپٹو ارننگ پلیٹ فارم</title>
+    <title>CFL - لاگ ان</title>
     <style>
-        :root {
-            --bg-color: #030705;
-            --card-bg: #0b1710;
-            --card-border: #13331f;
-            --neon-green: #00ff66;
-            --neon-glow: rgba(0, 255, 102, 0.25);
-            --red-theme: #ff3333;
-            --yellow-theme: #ffcc00;
-            --text-main: #e2f8f0;
-            --text-muted: #8fa99b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            background-image: radial-gradient(circle at 50% 10%, #062412 0%, #030705 80%);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 450px;
-        }
-
-        .page-box {
-            display: none;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 25px 20px;
-            border-radius: 22px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px var(--neon-glow);
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .page-box.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1, h2 {
-            color: var(--neon-green);
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 22px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 14px;
-            background: #050d08;
-            border: 1px solid #163823;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: var(--neon-green);
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #00b347, var(--neon-green));
-            color: #030705;
-            border: none;
-            width: 100%;
-            padding: 13px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            text-transform: uppercase;
-        }
-
-        .btn-yellow {
-            background: linear-gradient(135deg, #cca300, var(--yellow-theme));
-            color: #030705;
-        }
-
-        .btn-red {
-            background: linear-gradient(135deg, #cc0000, var(--red-theme));
-            color: #fff;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            margin: 15px 0;
-        }
-
-        .dash-card {
-            background: linear-gradient(145deg, #050d08, #0b1c12);
-            border: 1px solid #163823;
-            padding: 20px 10px;
-            border-radius: 18px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .dash-card:hover {
-            border-color: var(--neon-green);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px var(--neon-glow);
-        }
-
-        .dash-card .icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .dash-card b {
-            display: block;
-            font-size: 15px;
-            color: var(--neon-green);
-            margin-bottom: 3px;
-        }
-
-        .dash-card.red-card b {
-            color: var(--red-theme);
-        }
-
-        .dash-card.yellow-card b {
-            color: var(--yellow-theme);
-        }
-
-        .dash-card span {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .box-container {
-            background: #050d08;
-            border: 1px solid #163823;
-            padding: 16px;
-            border-radius: 14px;
-            margin-bottom: 14px;
-        }
-
-        .text-red {
-            color: var(--red-theme) !important;
-        }
-
-        .text-yellow {
-            color: var(--yellow-theme) !important;
-        }
-
-        .wheel-container {
-            position: relative;
-            width: 220px;
-            height: 220px;
-            margin: 15px auto;
-            border-radius: 50%;
-            border: 5px solid var(--red-theme);
-            background: #050d08;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 25px rgba(255, 51, 51, 0.4);
-            overflow: hidden;
-            transition: transform 4s cubic-bezier(0.15, 0.95, 0.15, 1);
-        }
-
-        .wheel-center-btn {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #ff3333, #990000);
-            border-radius: 50%;
-            color: #fff;
-            font-weight: bold;
-            font-size: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            border: 2px solid #fff;
-            z-index: 10;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        .wheel-sectors {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            font-size: 11px;
-            font-weight: bold;
-            color: var(--yellow-theme);
-        }
-
-        .chat-box {
-            max-height: 120px;
-            overflow-y: auto;
-            background: #030705;
-            border: 1px solid #13331f;
-            border-radius: 10px;
-            padding: 8px;
-            margin-bottom: 8px;
-            font-size: 12px;
-            text-align: right;
-        }
-
-        .chat-msg {
-            margin-bottom: 5px;
-            padding: 6px 10px;
-            border-radius: 8px;
-            background: #0b1710;
-        }
-
-        .switch-link {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-
-        .switch-link span {
-            color: var(--neon-green);
-            text-decoration: underline;
-        }
+        body { background-color: #0b1410; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #122119; padding: 30px; border-radius: 12px; border: 1px solid #1f3a2c; width: 320px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #4ade80; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #0b1410; border: 1px solid #1f3a2c; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #22c55e; border: none; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #16a34a; }
+        .error { color: #f87171; text-align: center; font-size: 14px; }
     </style>
 </head>
 <body>
-
-    <div class="container">
-
-        <!-- 1. لاگ ان صفحہ -->
-        <div id="pageLogin" class="page-box active">
-            <h1>CFL - لاگ ان</h1>
-            <div class="form-group">
-                <label>ای میل ایڈریس</label>
-                <input type="email" id="loginEmail" placeholder="example@gmail.com">
-            </div>
-            <div class="form-group">
-                <label>پاسورڈ</label>
-                <input type="password" id="loginPass" placeholder="پاسورڈ درج کریں">
-            </div>
-            <button class="btn" onclick="handleLogin()">لاگ ان کریں</button>
-            <div class="switch-link" onclick="openPage('pageRegister')">اکاؤنٹ نہیں ہے؟ <span>رجسٹر کریں</span></div>
-        </div>
-
-        <!-- 2. رجسٹریشن صفحہ -->
-        <div id="pageRegister" class="page-box">
-            <h1>CFL - رجسٹریشن</h1>
-            <div class="form-group">
-                <label>موبائل نمبر</label>
-                <input type="text" id="regMobile" placeholder="03XXXXXXXXX">
-            </div>
-            <div class="form-group">
-                <label>ای میل ایڈریس</label>
-                <input type="email" id="regEmail" placeholder="example@gmail.com">
-            </div>
-            <div class="form-group">
-                <label>پاسورڈ</label>
-                <input type="password" id="regPass" placeholder="مضبوط پاسورڈ بنائیں">
-            </div>
-            <button class="btn" onclick="handleRegister()">رجسٹر کریں</button>
-            <div class="switch-link" onclick="openPage('pageLogin')">پہلے سے اکاؤنٹ ہے؟ <span>لاگ ان کریں</span></div>
-        </div>
-
-        <!-- 3. یوزر مین ڈیش بورڈ -->
-        <div id="pageUserDashboard" class="page-box">
-            <h1>CFL - یوزر ڈیش بورڈ</h1>
-            
-            <div class="box-container" style="text-align: center;">
-                <div style="font-size: 12px; color: var(--text-muted);">موجودہ بیلنس</div>
-                <div style="font-size: 26px; font-weight: bold; color: var(--neon-green);" id="userBalanceDisplay">$0.35</div>
-                <div style="font-size: 11px; color: var(--red-theme); margin-top: 4px;" id="userStatusDisplay">اسٹیٹس: انوسٹمنٹ پینڈنگ (تصدیق کا انتظار ہے)</div>
-            </div>
-
-            <div class="dashboard-grid">
-                <div class="dash-card" onclick="openPage('pageTopUp')">
-                    <span class="icon">💳</span>
-                    <b>Top Up</b>
-                    <span>انوسٹمنٹ کریں</span>
-                </div>
-                <div class="dash-card" onclick="openPage('pageWithdraw')">
-                    <span class="icon">💸</span>
-                    <b>Withdraw</b>
-                    <span>رقم نکلوانا</span>
-                </div>
-                <div class="dash-card yellow-card" onclick="openPage('pageTasks')">
-                    <span class="icon">📋</span>
-                    <b class="text-yellow">Daily Tasks</b>
-                    <span>روزانہ ٹاسک ($0.35)</span>
-                </div>
-                <div class="dash-card red-card" onclick="openPage('pageCashWill')">
-                    <span class="icon">🎡</span>
-                    <b class="text-red">Cash Will</b>
-                    <span>اسپن اینڈ ون</span>
-                </div>
-            </div>
-
-            <div class="box-container">
-                <h3 style="font-size: 13px; color: var(--neon-green); margin-bottom: 6px;">ایڈمن لائیو چیت</h3>
-                <div class="chat-box" id="userChatBox">
-                    <div class="chat-msg"><b>ایڈمن:</b> خوش آمدید! انوسٹمنٹ کا اسکرین شاٹ لازمی اپ لوڈ کریں۔</div>
-                </div>
-                <div style="display: flex; gap: 6px;">
-                    <input type="text" id="userChatInput" placeholder="پیغام لکھیں...">
-                    <button class="btn" style="margin:0; width: 80px; padding: 8px; font-size: 12px;" onclick="sendUserChat()">بھیجیں</button>
-                </div>
-            </div>
-
-            <button class="btn btn-red" style="margin-top: 5px; padding: 10px;" onclick="openPage('pageLogin')">لاگ آؤٹ</button>
-        </div>
-
-        <!-- 4. ٹاپ اپ / انوسٹمنٹ (اسکرین شاٹ پروف کے ساتھ) -->
-        <div id="pageTopUp" class="page-box">
-            <h1>ٹاپ اپ / انوسٹمنٹ پروف</h1>
-            <div class="box-container">
-                <label>ایڈمن کا کرپٹو والٹ ایڈریس (USDT):</label>
-                <input type="text" id="displayAdminWallet" readonly style="margin-bottom: 8px;">
-                <button class="btn btn-yellow" style="padding: 9px; font-size: 13px;" onclick="copyWallet()">ایڈریس کاپی کریں</button>
-            </div>
-            <div class="form-group">
-                <label>انوسٹمنٹ اسکرین شاٹ / ٹرانزیکشن پروف لنک یا تفصیل درج کریں:</label>
-                <input type="text" id="topupProof" placeholder="مثلاً: TxID یا اسکرین شاٹ کا لنک...">
-            </div>
-            <button class="btn" onclick="submitTopup()">پروف ایڈمن کو بھیجیں</button>
-            <button class="btn btn-red" style="margin-top: 8px;" onclick="openPage('pageUserDashboard')">واپس ڈیش بورڈ</button>
-        </div>
-
-        <!-- 5. ودड्रাল کا صفحہ -->
-        <div id="pageWithdraw" class="page-box">
-            <h1>ودড্রাল (Withdraw)</h1>
-            <div class="form-group">
-                <label>اپنا کرپٹو والٹ ایڈریس درج کریں</label>
-                <input type="text" id="userWithdrawAddr" placeholder="Wallet Address...">
-            </div>
-            <div class="form-group">
-                <label>رقم ($)</label>
-                <input type="number" id="userWithdrawAmount" placeholder="مثلاً 10">
-            </div>
-            <button class="btn btn-yellow" onclick="submitWithdraw()">ودড্রال کی درخواست بھیجیں</button>
-            <button class="btn btn-red" style="margin-top: 8px;" onclick="openPage('pageUserDashboard')">واپس ڈیش بورڈ</button>
-        </div>
-
-        <!-- 6. ڈیلی ٹاسک صفحہ (0.35$ روزانہ) -->
-        <div id="pageTasks" class="page-box" style="border-color: var(--yellow-theme);">
-            <h1 style="color: var(--yellow-theme);">روزانہ کے ٹاسکس ($0.35 ریوارڈ)</h1>
-            <div class="box-container" style="border-color: var(--yellow-theme);">
-                <div style="font-size: 13px; color: var(--text-main); font-weight: bold;">ڈیلی ٹاسک: اشتہار ملاحظہ کریں</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">ریوارڈ: +$0.35 روزانہ</div>
-                <button class="btn btn-yellow" style="padding: 8px; font-size: 12px;" onclick="claimDailyTask()">ٹاسک مکمل کر کے $0.35 حاصل کریں</button>
-            </div>
-            <button class="btn btn-red" style="margin-top: 8px;" onclick="openPage('pageUserDashboard')">واپس ڈیش بورڈ</button>
-        </div>
-
-        <!-- 7. کیش ول (اسپن وہیل) -->
-        <div id="pageCashWill" class="page-box" style="border-color: var(--red-theme);">
-            <h1 style="color: var(--red-theme);">Cash Will (اسپن وہیل)</h1>
-            <div class="box-container" style="border-color: var(--red-theme); text-align: center;">
-                <div style="font-size: 12px; color: var(--text-muted);">ریفرل لیول سٹیٹس:</div>
-                <div style="font-size: 13px; font-weight: bold; color: var(--yellow-theme); margin: 4px 0;">Level 1 (5 ریفرلز = $3) / Level 2 (10 ریفرلز = $6)</div>
-            </div>
-
-            <div class="wheel-container" id="spinWheel">
-                <div class="wheel-center-btn" onclick="spinTheWheel()">SPIN</div>
-                <div class="wheel-sectors" style="display: flex; flex-direction: column; justify-content: space-around; height: 100%; padding: 15px;">
-                    <div>$5 | $50 | $100</div>
-                    <div style="display: flex; justify-content: space-between; padding: 0 10px;">
-                        <span>$200</span>
-                        <span>$10</span>
-                    </div>
-                    <div>$15 | $20 | $110</div>
-                </div>
-            </div>
-
-            <div id="spinResultMsg" style="text-align: center; font-size: 13px; color: var(--neon-green); margin: 10px 0; font-weight: bold;"></div>
-            <button class="btn btn-yellow" onclick="openPage('pageUserDashboard')">ڈیش بورڈ پر جائیں</button>
-        </div>
-
-        <!-- 8. ایڈمن پینل (اسکرین شاٹ چیک اور اپروول سسٹم) -->
-        <div id="pageAdminPanel" class="page-box" style="border-color: var(--yellow-theme);">
-            <h1 style="color: var(--yellow-theme);">⭐ CFL - ایڈمن پینل</h1>
-            
-            <div class="box-container" style="border-color: var(--yellow-theme);">
-                <h3 style="font-size: 13px; color: var(--yellow-theme); margin-bottom: 6px;">والٹ ایڈریس تبدیل کریں</h3>
-                <input type="text" id="adminWalletInput" placeholder="نیا کرپٹو ایڈریس..." style="margin-bottom: 8px;">
-                <button class="btn btn-yellow" style="padding: 9px; font-size: 13px;" onclick="saveAdminWallet()">ایڈریس اپ ڈیٹ کریں</button>
-            </div>
-
-            <div class="box-container">
-                <h3 style="font-size: 13px; color: var(--neon-green); margin-bottom: 6px;">یوزرز کی انوسٹمنٹ / اسکرین شاٹ ریکویسٹس</h3>
-                <div id="adminRequestsList" style="font-size: 12px; color: var(--text-muted); max-height: 120px; overflow-y: auto;">
-                    کوئی نئی درخواست موجود نہیں۔
-                </div>
-            </div>
-
-            <div class="box-container">
-                <h3 style="font-size: 13px; color: var(--neon-green); margin-bottom: 6px;">لائو چیت</h3>
-                <div class="chat-box" id="adminChatBox">
-                    <div class="chat-msg">کوئی پیغام نہیں</div>
-                </div>
-                <div style="display: flex; gap: 6px;">
-                    <input type="text" id="adminChatInput" placeholder="جواب لکھیں...">
-                    <button class="btn btn-yellow" style="margin:0; width: 80px; padding: 8px; font-size: 12px;" onclick="sendAdminChat()">جواب دیں</button>
-                </div>
-            </div>
-
-            <button class="btn btn-red" onclick="openPage('pageLogin')">ایڈمن لاگ آؤٹ</button>
-        </div>
-
+    <div class="card">
+        <h2>⭐ CFL لاگ ان ⭐</h2>
+        {% if error %}<div class="error">{{ error }}</div>{% endif %}
+        <form method="POST">
+            <input type="email" name="email" placeholder="ای میل ایڈریس" required>
+            <input type="password" name="password" placeholder="پاسورڈ" required>
+            <button type="submit">لاگ ان کریں</button>
+        </form>
     </div>
+</body>
+</html>
+"""
 
+USER_DASHBOARD_HTML = """
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>CFL - یوزر ڈیش بورড</title>
+    <style>
+        body { background-color: #0b1410; color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 400px; margin: auto; background: #122119; padding: 20px; border-radius: 12px; border: 1px solid #1f3a2c; }
+        .balance-box { background: #0b1410; padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #1f3a2c; margin-bottom: 20px; }
+        .balance { font-size: 28px; color: #4ade80; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card-btn { background: #0b1410; border: 1px solid #1f3a2c; padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; color: #fff; text-decoration: none; }
+        .card-btn:hover { border-color: #4ade80; }
+        .logout { background: #dc2626; color: #fff; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align: center; color: #fbbf24;">⭐ CFL ڈیش بورড ⭐</h2>
+        <div class="balance-box">
+            <div>موجودہ بیلنس</div>
+            <div class="balance">${{ "%.2f"|format(user.balance) }}</div>
+            <div style="font-size: 13px; color: #9ca3af; margin-top: 5px;">موجودہ لیول: {{ user.level }}</div>
+        </div>
+        <div class="grid">
+            <a href="/withdraw" class="card-btn"><b>Withdraw</b><br><span style="font-size: 12px; color: #9ca3af;">رقم نکلوانا</span></a>
+            <a href="/topup" class="card-btn"><b>Top Up</b><br><span style="font-size: 12px; color: #9ca3af;">انوسٹمنٹ کریں</span></a>
+            <a href="/cashwheel" class="card-btn"><b>Cash Wheel</b><br><span style="font-size: 12px; color: #9ca3af;">اسپن اینڈ ون</span></a>
+            <a href="/tasks" class="card-btn"><b>Daily Tasks</b><br><span style="font-size: 12px; color: #9ca3af;">روزانہ ٹاسک</span></a>
+        </div>
+        <form action="/logout">
+            <button class="logout" type="submit">لاگ آؤٹ</button>
+        </form>
+    </div>
+</body>
+</html>
+"""
+
+TOPUP_HTML = """
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>CFL - ٹاپ اپ / انویسٹمنٹ</title>
+    <style>
+        body { background-color: #0b1410; color: #fff; font-family: sans-serif; padding: 20px; }
+        .container { max-width: 400px; margin: auto; background: #122119; padding: 20px; border-radius: 12px; border: 1px solid #1f3a2c; }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; background: #0b1410; border: 1px solid #1f3a2c; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        button { background: #22c55e; color: #000; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>انوسٹمنٹ اور اسکرین شاٹ اپ لوڈ</h2>
+        <p style="font-size: 13px; color: #9ca3af;">کمپنی کا والٹ ایڈریس:<br><b style="color: #fbbf24;">{{ wallet }}</b></p>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="trx_id" placeholder="TRX ID یا ٹرانزیکشن نمبر درج کریں" required>
+            <label style="font-size: 13px; display: block; margin-top: 10px;">ادائیگی کا اسکرین شاٹ اپ لوڈ کریں:</label>
+            <input type="file" name="screenshot" accept="image/*" required>
+            <button type="submit">ریکویسٹ سبمٹ کریں</button>
+        </form>
+        <a href="/dashboard" style="color: #4ade80; display: block; text-align: center; margin-top: 15px; text-decoration: none;">واپس ڈیش بورڈ</a>
+    </div>
+</body>
+</html>
+"""
+
+CASHWHEEL_HTML = """
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>CFL - کیش وہیل</title>
+    <style>
+        body { background-color: #0b1410; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
+        .box { max-width: 400px; margin: auto; background: #122119; padding: 30px; border-radius: 12px; border: 1px solid #1f3a2c; }
+        button { padding: 12px 24px; background: #fbbf24; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        .result { font-size: 22px; color: #4ade80; margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>🎡 کیش ویل (اسپن اینڈ ون) 🎡</h2>
+        <p>اسپن کریں اور انعامات جیتیں! (ایڈمن کنٹرولڈ فکسڈ رقم)</p>
+        <button onclick="spin()">اسپن گھمائیں</button>
+        <div class="result" id="res"></div>
+        <br><a href="/dashboard" style="color: #4ade80; text-decoration: none; display: inline-block; margin-top: 20px;">ڈیش بورڈ پر واپس جائیں</a>
+    </div>
     <script>
-        // لوکل سٹوریج ڈیٹا انیشلائزیشن
-        if(!localStorage.getItem('cflAdminWallet')) {
-            localStorage.setItem('cflAdminWallet', 'T_USDT_CFL_Official_Secure_Wallet_999');
-        }
-        if(!localStorage.getItem('cflChats')) {
-            localStorage.setItem('cflChats', JSON.stringify([{sender: 'ایڈمن', text: 'خوش آمدید! انوسٹمنٹ کا اسکرین شاٹ لازمی اپ لوڈ کریں۔'}]));
-        }
-        if(!localStorage.getItem('cflRequests')) {
-            localStorage.setItem('cflRequests', JSON.stringify([]));
-        }
-        if(!localStorage.getItem('userBalance')) {
-            localStorage.setItem('userBalance', '0.35');
-        }
-        if(!localStorage.getItem('userStatus')) {
-            localStorage.setItem('userStatus', 'Pending');
-        }
-
-        function openPage(pageId) {
-            document.querySelectorAll('.page-box').forEach(box => box.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            
-            if(pageId === 'pageTopUp') {
-                document.getElementById('displayAdminWallet').value = localStorage.getItem('cflAdminWallet');
-            }
-            if(pageId === 'pageAdminPanel') {
-                document.getElementById('adminWalletInput').value = localStorage.getItem('cflAdminWallet');
-                loadAdminData();
-            }
-            if(pageId === 'pageUserDashboard') {
-                updateUserDataUI();
-            }
-        }
-
-        function updateUserDataUI() {
-            let bal = parseFloat(localStorage.getItem('userBalance') || '0.35');
-            let status = localStorage.getItem('userStatus');
-            document.getElementById('userBalanceDisplay').innerText = `$${bal.toFixed(2)}`;
-            let statusEl = document.getElementById('userStatusDisplay');
-            if(status === 'Approved') {
-                statusEl.style.color = 'var(--neon-green)';
-                statusEl.innerText = 'اسٹیٹس: ایکٹیو (انوسٹمنٹ منظور شدہ)';
-            } else {
-                statusEl.style.color = 'var(--red-theme)';
-                statusEl.innerText = 'اسٹیٹس: انوسٹمنٹ پینڈنگ (تصدیق کا انتظار ہے)';
-            }
-        }
-
-        function handleRegister() {
-            let mob = document.getElementById('regMobile').value;
-            let email = document.getElementById('regEmail').value;
-            let pass = document.getElementById('regPass').value;
-            if(!mob || !email || !pass) {
-                alert('براہ کرم تمام خانے پُر کریں!');
-                return;
-            }
-            localStorage.setItem('cflUser_' + email, JSON.stringify({mob, pass}));
-            alert('رجسٹریشن کامیاب! اب لاگ ان کریں۔');
-            openPage('pageLogin');
-        }
-
-        function handleLogin() {
-            let email = document.getElementById('loginEmail').value;
-            let pass = document.getElementById('loginPass').value;
-
-            if(!email || !pass) {
-                alert('ای میل اور پاسورڈ درج کریں!');
-                return;
-            }
-
-            if(email === 'admin@clounode.com' && pass === 'admin1234') {
-                openPage('pageAdminPanel');
-                return;
-            }
-
-            localStorage.setItem('currentUserEmail', email);
-            openPage('pageUserDashboard');
-            loadChats();
-        }
-
-        function saveAdminWallet() {
-            let newW = document.getElementById('adminWalletInput').value;
-            if(!newW) {
-                alert('ایڈریس لکھیں!');
-                return;
-            }
-            localStorage.setItem('cflAdminWallet', newW);
-            alert('والٹ ایڈریس کامیابی سے تبدیل ہو گیا!');
-        }
-
-        function copyWallet() {
-            let copyText = document.getElementById('displayAdminWallet');
-            copyText.select();
-            navigator.clipboard.writeText(copyText.value);
-            alert('ایڈریس کاپی ہو گیا!');
-        }
-
-        function submitTopup() {
-            let proof = document.getElementById('topupProof').value;
-            if(!proof) {
-                alert('براہ کرم اسکرین شاٹ یا انوسٹمنٹ پروف درج کریں!');
-                return;
-            }
-            let reqs = JSON.parse(localStorage.getItem('cflRequests'));
-            reqs.push({ id: Date.now(), type: 'Investment/TopUp', detail: proof, status: 'Pending', time: new Date().toLocaleDateString() });
-            localStorage.setItem('cflRequests', JSON.stringify(reqs));
-            alert('انوسٹمنٹ اسکرین شاٹ ایڈمن کو بھیج دیا گیا ہے! تصدیق کا انتظار کریں۔');
-            document.getElementById('topupProof').value = '';
-            openPage('pageUserDashboard');
-        }
-
-        function submitWithdraw() {
-            let addr = document.getElementById('userWithdrawAddr').value;
-            let amt = document.getElementById('userWithdrawAmount').value;
-            if(!addr || !amt) {
-                alert('تمام معلومات درج کریں!');
-                return;
-            }
-            let reqs = JSON.parse(localStorage.getItem('cflRequests'));
-            reqs.push({ id: Date.now(), type: 'Withdraw', detail: `${amt}$ to ${addr}`, status: 'Pending', time: new Date().toLocaleDateString() });
-            localStorage.setItem('cflRequests', JSON.stringify(reqs));
-            alert('ودড্রال کی درخواست بھیج دی گئی ہے!');
-            openPage('pageUserDashboard');
-        }
-
-        function claimDailyTask() {
-            let bal = parseFloat(localStorage.getItem('userBalance') || '0.35');
-            bal += 0.35;
-            localStorage.setItem('userBalance', bal.toFixed(2));
-            alert('مبارک ہو! آپ کو ڈیلی ٹاسک کا $0.35 ریوارڈ مل گیا ہے!');
-            openPage('pageUserDashboard');
-        }
-
-        function spinTheWheel() {
-            const prizes = [5, 10, 15, 20, 50, 100, 110, 200];
-            let randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
-            
-            let wheel = document.getElementById('spinWheel');
-            let randomDeg = Math.floor(Math.random() * 3600) + 720;
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
-
-            setTimeout(() => {
-                document.getElementById('spinResultMsg').innerText = `مبارک ہو! آپ نے کیش وہیل سے $${randomPrize} جیت لیے ہیں!`;
-                let bal = parseFloat(localStorage.getItem('userBalance') || '0.35');
-                bal += randomPrize;
-                localStorage.setItem('userBalance', bal.toFixed(2));
-            }, 4000);
-        }
-
-        function loadAdminData() {
-            let reqs = JSON.parse(localStorage.getItem('cflRequests'));
-            let listDiv = document.getElementById('adminRequestsList');
-            if(reqs.length === 0) {
-                listDiv.innerHTML = 'کوئی نئی درخواست موجود نہیں۔';
-                return;
-            }
-            let html = '';
-            reqs.forEach((r, index) => {
-                html += `<div style="padding:8px; border-bottom:1px solid #163823; margin-bottom: 5px;">
-                    <b>[${r.type}]</b> ${r.detail} <br>
-                    <span style="color:var(--yellow-theme);">سٹیٹس: ${r.status}</span><br>`;
-                if(r.status === 'Pending') {
-                    html += `<button class="btn btn-yellow" style="padding:4px 10px; font-size:11px; margin-top:4px; width:auto;" onclick="approveRequest(${index})">منظور کریں (Approve)</button>`;
-                }
-                html += `</div>`;
+        function spin() {
+            fetch('/do_spin', {method: 'POST'})
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('res').innerText = "مبارک ہو! آپ نے $" + data.amount + " جیت لیے ہیں!";
             });
-            listDiv.innerHTML = html;
-            loadChats();
-        }
-
-        function approveRequest(index) {
-            let reqs = JSON.parse(localStorage.getItem('cflRequests'));
-            reqs[index].status = 'Approved';
-            localStorage.setItem('cflRequests', JSON.stringify(reqs));
-            if(reqs[index].type === 'Investment/TopUp') {
-                localStorage.setItem('userStatus', 'Approved');
-            }
-            alert('درخواست کامیابی سے منظور کر دی گئی!');
-            loadAdminData();
-        }
-
-        function sendUserChat() {
-            let msg = document.getElementById('userChatInput').value;
-            if(!msg) return;
-            let chats = JSON.parse(localStorage.getItem('cflChats'));
-            chats.push({ sender: 'یوزر', text: msg });
-            localStorage.setItem('cflChats', JSON.stringify(chats));
-            document.getElementById('userChatInput').value = '';
-            loadChats();
-        }
-
-        function sendAdminChat() {
-            let msg = document.getElementById('adminChatInput5' || 'adminChatInput').value;
-            if(!msg) return;
-            let chats = JSON.parse(localStorage.getItem('cflChats'));
-            chats.push({ sender: 'ایڈمن', text: msg });
-            localStorage.setItem('cflChats', JSON.stringify(chats));
-            document.getElementById('adminChatInput').value = '';
-            loadChats();
-        }
-
-        function loadChats() {
-            let chats = JSON.parse(localStorage.getItem('cflChats'));
-            let uBox = document.getElementById('userChatBox');
-            let aBox = document.getElementById('adminChatBox');
-            let html = '';
-            chats.forEach(c => {
-                html += `<div class="chat-msg"><b>${c.sender}:</b> ${c.text}</div>`;
-            });
-            uBox.innerHTML = html;
-            aBox.innerHTML = html;
-            uBox.scrollTop = uBox.scrollHeight;
-            aBox.scrollTop = aBox.scrollHeight;
         }
     </script>
 </body>
 </html>
+"""
+
+ADMIN_PANEL_HTML = """
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>CFL - ایڈمن پینل</title>
+    <style>
+        body { background-color: #0b1410; color: #fff; font-family: sans-serif; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        .section { background: #122119; padding: 20px; border-radius: 12px; border: 1px solid #1f3a2c; margin-bottom: 20px; }
+        input, select, button { width: 100%; padding: 10px; margin: 8px 0; background: #0b1410; border: 1px solid #1f3a2c; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        button { background: #fbbf24; color: #000; font-weight: bold; cursor: pointer; }
+        h2 { color: #fbbf24; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>⭐ CFL - ایڈمن پینل ⭐</h2>
+        
+        <!-- Wallet Address Update -->
+        <div class="section">
+            <h3>والٹ ایڈریس تبدیل کریں</h3>
+            <form method="POST" action="/admin/update_wallet">
+                <input type="text" name="wallet" value="{{ admin.wallet_address }}" required>
+                <button type="submit">ایڈریس اپ ڈیٹ کریں</button>
+            </form>
+        </div>
+
+        <!-- Spin Win Payout Control -->
+        <div class="section">
+            <h3>ک্যাশ وہیل (Spin) فکسڈ رقم کنٹرول</h3>
+            <form method="POST" action="/admin/update_spin">
+                <input type="number" step="0.01" name="spin_amt" value="{{ admin.spin_fixed_amount }}" required>
+                <button type="submit">اسپن اماؤنٹ سیٹ کریں</button>
+            </form>
+        </div>
+
+        <!-- User Level Upgrades -->
+        <div class="section">
+            <h3>یوزر لیول اپ ڈیٹ کریں</h3>
+            <form method="POST" action="/admin/update_level">
+                <input type="email" name="user_email" placeholder="یوزر ای میل" required>
+                <select name="level">
+                    <option value="1">لیول 1</option>
+                    <option value="2">لیول 2</option>
+                    <option value="3">لیول 3</option>
+                </select>
+                <button type="submit">لیول اپ گریڈ کریں</button>
+            </form>
+        </div>
+
+        <!-- Pending Investments & Screenshots -->
+        <div class="section">
+            <h3>یوزر انوسٹمنٹ اور اسکرین شاٹ ریکویسٹس</h3>
+            {% if admin.investments_pending %}
+                {% for inv in admin.investments_pending %}
+                    <div style="background: #0b1410; padding: 10px; margin: 10px 0; border-radius: 6px;">
+                        <p>یوزر: {{ inv.email }} | TRX ID: {{ inv.trx }}</p>
+                        <p>اسکرین شاٹ: <a href="{{ inv.screenshot }}" target="_blank" style="color: #4ade80;">دیکھیں</a></p>
+                        <a href="/admin/approve/{{ loop.index0 }}" style="background: #22c55e; color: #000; padding: 5px 10px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">اپروو کریں ($30 بیلنس دیں)</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: #9ca3af;">کوئی نئی درخواست موجود نہیں۔</p>
+            {% endif %}
+        </div>
+        
+        <form action="/logout"><button style="background: #dc2626; color: #fff;" type="submit">ایڈمن لاگ آؤٹ</button></form>
+    </div>
+</body>
+</html>
+"""
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if email == "admin@cfl.com" and password == "123":
+            session['admin'] = True
+            return redirect(url_for('admin_panel'))
+        elif email in users and users[email]['password'] == password:
+            session['user'] = email
+            return redirect(url_for('dashboard'))
+        else:
+            error = "غلط ای میل یا پاسورڈ!"
+    return render_template_string(LOGIN_HTML, error=error)
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    user = users[session['user']]
+    return render_template_string(USER_DASHBOARD_HTML, user=user)
+
+@app.route('/topup', methods=['GET', 'POST'])
+def topup():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        trx = request.form.get('trx_id')
+        file = request.files.get('screenshot')
+        screenshot_url = "#"
+        if file:
+            screenshot_url = "/static/" + file.filename
+        
+        admin_data['investments_pending'].append({
+            "email": session['user'],
+            "trx": trx,
+            "screenshot": screenshot_url
+        })
+        return redirect(url_for('dashboard'))
+    return render_template_string(TOPUP_HTML, wallet=admin_data['wallet_address'])
+
+@app.route('/cashwheel')
+def cashwheel():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template_string(CASHWHEEL_HTML)
+
+@app.route('/do_spin', methods=['POST'])
+def do_spin():
+    if 'user' not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    amt = admin_data['spin_fixed_amount']
+    users[session['user']]['balance'] += amt
+    return jsonify({"amount": amt})
+
+@app.route('/admin')
+def admin_panel():
+    if 'admin' not in session:
+        return redirect(url_for('login'))
+    return render_template_string(ADMIN_PANEL_HTML, admin=admin_data)
+
+@app.route('/admin/update_wallet', methods=['POST'])
+def update_wallet():
+    if 'admin' in session:
+        admin_data['wallet_address'] = request.form.get('wallet')
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/update_spin', methods=['POST'])
+def update_spin():
+    if 'admin' in session:
+        admin_data['spin_fixed_amount'] = float(request.form.get('spin_amt'))
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/update_level', methods=['POST'])
+def update_level():
+    if 'admin' in session:
+        email = request.form.get('user_email')
+        lvl = int(request.form.get('level'))
+        if email in users:
+            users[email]['level'] = lvl
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/approve/<int:idx>')
+def approve_inv(idx):
+    if 'admin' in session and idx < len(admin_data['investments_pending']):
+        inv = admin_data['investments_pending'].pop(idx)
+        email = inv['email']
+        if email in users:
+            users[email]['balance'] += 30.00
+    return redirect(url_for('admin_panel'))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
