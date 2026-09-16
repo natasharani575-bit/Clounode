@@ -40,13 +40,12 @@
             max-width: 450px;
         }
 
-        /* ہر صفحہ بالکل الگ اور صاف کھلے گا */
         .page-box {
             display: none;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             padding: 25px 20px;
-            border-radius: 20px;
+            border-radius: 22px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px var(--neon-glow);
             animation: fadeIn 0.3s ease-in-out;
         }
@@ -82,10 +81,10 @@
 
         input {
             width: 100%;
-            padding: 11px 14px;
+            padding: 12px 14px;
             background: #050d08;
             border: 1px solid #163823;
-            border-radius: 10px;
+            border-radius: 12px;
             color: #fff;
             font-size: 14px;
             outline: none;
@@ -101,7 +100,7 @@
             border: none;
             width: 100%;
             padding: 13px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
@@ -119,45 +118,52 @@
             color: #fff;
         }
 
-        /* سرکولر آپشنز (دائرے والے بٹن ڈیش بورڈ پر) */
-        .circular-menu {
+        .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 14px;
             margin: 15px 0;
         }
 
-        .circle-btn {
-            background: #050d08;
+        .dash-card {
+            background: linear-gradient(145deg, #050d08, #0b1c12);
             border: 1px solid #163823;
-            padding: 15px 10px;
-            border-radius: 15px;
+            padding: 20px 10px;
+            border-radius: 18px;
             text-align: center;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .circle-btn:hover {
+        .dash-card:hover {
             border-color: var(--neon-green);
-            background: #0b1c12;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--neon-glow);
         }
 
-        .circle-btn b {
+        .dash-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
             display: block;
-            font-size: 14px;
-            color: var(--neon-green);
-            margin-bottom: 4px;
         }
 
-        .circle-btn.red-card b {
+        .dash-card b {
+            display: block;
+            font-size: 15px;
+            color: var(--neon-green);
+            margin-bottom: 3px;
+        }
+
+        .dash-card.red-card b {
             color: var(--red-theme);
         }
 
-        .circle-btn.yellow-card b {
+        .dash-card.yellow-card b {
             color: var(--yellow-theme);
         }
 
-        .circle-btn span {
+        .dash-card span {
             font-size: 11px;
             color: var(--text-muted);
         }
@@ -165,8 +171,8 @@
         .box-container {
             background: #050d08;
             border: 1px solid #163823;
-            padding: 14px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 14px;
             margin-bottom: 14px;
         }
 
@@ -178,12 +184,56 @@
             color: var(--yellow-theme) !important;
         }
 
+        .wheel-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 15px auto;
+            border-radius: 50%;
+            border: 5px solid var(--red-theme);
+            background: #050d08;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 25px rgba(255, 51, 51, 0.4);
+            overflow: hidden;
+            transition: transform 4s cubic-bezier(0.15, 0.95, 0.15, 1);
+        }
+
+        .wheel-center-btn {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff3333, #990000);
+            border-radius: 50%;
+            color: #fff;
+            font-weight: bold;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid #fff;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .wheel-sectors {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--yellow-theme);
+        }
+
         .chat-box {
             max-height: 120px;
             overflow-y: auto;
             background: #030705;
             border: 1px solid #13331f;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 8px;
             margin-bottom: 8px;
             font-size: 12px;
@@ -192,8 +242,8 @@
 
         .chat-msg {
             margin-bottom: 5px;
-            padding: 5px 8px;
-            border-radius: 6px;
+            padding: 6px 10px;
+            border-radius: 8px;
             background: #0b1710;
         }
 
@@ -249,40 +299,43 @@
             <div class="switch-link" onclick="openPage('pageLogin')">پہلے سے اکاؤنٹ ہے؟ <span>لاگ ان کریں</span></div>
         </div>
 
-        <!-- 3. یوزر مین ڈیش بورڈ (گرین تھیم) -->
+        <!-- 3. یوزر مین ڈیش بورڈ -->
         <div id="pageUserDashboard" class="page-box">
             <h1>CFL - یوزر ڈیش بورڈ</h1>
             
             <div class="box-container" style="text-align: center;">
                 <div style="font-size: 12px; color: var(--text-muted);">موجودہ بیلنس</div>
-                <div style="font-size: 26px; font-weight: bold; color: var(--neon-green);">$30.00</div>
-                <div style="font-size: 11px; color: var(--text-red); margin-top: 4px;">اسٹیٹس: ایکٹیو (Investment Pending)</div>
+                <div style="font-size: 26px; font-weight: bold; color: var(--neon-green);" id="userBalanceDisplay">$0.35</div>
+                <div style="font-size: 11px; color: var(--red-theme); margin-top: 4px;" id="userStatusDisplay">اسٹیٹس: انوسٹمنٹ پینڈنگ (تصدیق کا انتظار ہے)</div>
             </div>
 
-            <!-- سرکولر آپشنز (کلک کرنے پر الگ صفحات کھلیں گے) -->
-            <div class="circular-menu">
-                <div class="circle-btn" onclick="openPage('pageTopUp')">
+            <div class="dashboard-grid">
+                <div class="dash-card" onclick="openPage('pageTopUp')">
+                    <span class="icon">💳</span>
                     <b>Top Up</b>
                     <span>انوسٹمنٹ کریں</span>
                 </div>
-                <div class="circle-btn" onclick="openPage('pageWithdraw')">
+                <div class="dash-card" onclick="openPage('pageWithdraw')">
+                    <span class="icon">💸</span>
                     <b>Withdraw</b>
                     <span>رقم نکلوانا</span>
                 </div>
-                <div class="circle-btn yellow-card" onclick="openPage('pageTasks')">
+                <div class="dash-card yellow-card" onclick="openPage('pageTasks')">
+                    <span class="icon">📋</span>
                     <b class="text-yellow">Daily Tasks</b>
-                    <span>ارننگ ٹاسک</span>
+                    <span>روزانہ ٹاسک ($0.35)</span>
                 </div>
-                <div class="circle-btn red-card" onclick="openPage('pageCashWill')">
+                <div class="dash-card red-card" onclick="openPage('pageCashWill')">
+                    <span class="icon">🎡</span>
                     <b class="text-red">Cash Will</b>
-                    <span>ریوارڈز اور لیولز</span>
+                    <span>اسپن اینڈ ون</span>
                 </div>
             </div>
 
             <div class="box-container">
                 <h3 style="font-size: 13px; color: var(--neon-green); margin-bottom: 6px;">ایڈمن لائیو چیت</h3>
                 <div class="chat-box" id="userChatBox">
-                    <div class="chat-msg"><b>ایڈمن:</b> خوش آمدید! کوئی سوال ہو تو پوچھیں۔</div>
+                    <div class="chat-msg"><b>ایڈمن:</b> خوش آمدید! انوسٹمنٹ کا اسکرین شاٹ لازمی اپ لوڈ کریں۔</div>
                 </div>
                 <div style="display: flex; gap: 6px;">
                     <input type="text" id="userChatInput" placeholder="پیغام لکھیں...">
@@ -293,23 +346,23 @@
             <button class="btn btn-red" style="margin-top: 5px; padding: 10px;" onclick="openPage('pageLogin')">لاگ آؤٹ</button>
         </div>
 
-        <!-- 4. ٹاپ اپ / انوسٹمنٹ کا الگ صفحہ -->
+        <!-- 4. ٹاپ اپ / انوسٹمنٹ (اسکرین شاٹ پروف کے ساتھ) -->
         <div id="pageTopUp" class="page-box">
-            <h1>ٹاپ اپ / انوسٹمنٹ</h1>
+            <h1>ٹاپ اپ / انوسٹمنٹ پروف</h1>
             <div class="box-container">
                 <label>ایڈمن کا کرپٹو والٹ ایڈریس (USDT):</label>
                 <input type="text" id="displayAdminWallet" readonly style="margin-bottom: 8px;">
                 <button class="btn btn-yellow" style="padding: 9px; font-size: 13px;" onclick="copyWallet()">ایڈریس کاپی کریں</button>
             </div>
             <div class="form-group">
-                <label>پیمنٹ کا اسکرین شاٹ / پروف درج کریں</label>
-                <input type="text" id="topupProof" placeholder="ٹرانزیکشن ID یا لنک لکھیں">
+                <label>انوسٹمنٹ اسکرین شاٹ / ٹرانزیکشن پروف لنک یا تفصیل درج کریں:</label>
+                <input type="text" id="topupProof" placeholder="مثلاً: TxID یا اسکرین شاٹ کا لنک...">
             </div>
-            <button class="btn" onclick="submitTopup()">ٹاپ اپ ریکویسٹ بھیجیں</button>
+            <button class="btn" onclick="submitTopup()">پروف ایڈمن کو بھیجیں</button>
             <button class="btn btn-red" style="margin-top: 8px;" onclick="openPage('pageUserDashboard')">واپس ڈیش بورڈ</button>
         </div>
 
-        <!-- 5. ودড্রাল کا الگ صفحہ -->
+        <!-- 5. ودड्रাল کا صفحہ -->
         <div id="pageWithdraw" class="page-box">
             <h1>ودড্রাল (Withdraw)</h1>
             <div class="form-group">
@@ -318,41 +371,48 @@
             </div>
             <div class="form-group">
                 <label>رقم ($)</label>
-                <input type="number" id="userWithdrawAmount" placeholder="مثلاً 50">
+                <input type="number" id="userWithdrawAmount" placeholder="مثلاً 10">
             </div>
             <button class="btn btn-yellow" onclick="submitWithdraw()">ودড্রال کی درخواست بھیجیں</button>
             <button class="btn btn-red" style="margin-top: 8px;" onclick="openPage('pageUserDashboard')">واپس ڈیش بورڈ</button>
         </div>
 
-        <!-- 6. ڈیلی ٹاسک (Tasks) کا الگ صفحہ - یلو تھیم -->
+        <!-- 6. ڈیلی ٹاسک صفحہ (0.35$ روزانہ) -->
         <div id="pageTasks" class="page-box" style="border-color: var(--yellow-theme);">
-            <h1 style="color: var(--yellow-theme);">روزانہ کے ٹاسکس (Tasks)</h1>
+            <h1 style="color: var(--yellow-theme);">روزانہ کے ٹاسکس ($0.35 ریوارڈ)</h1>
             <div class="box-container" style="border-color: var(--yellow-theme);">
-                <div style="font-size: 13px; color: var(--text-main); font-weight: bold;">ٹاسک #1: ویڈیو اشتہار دیکھیں</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">ریوارڈ: +$2.00</div>
-                <button class="btn btn-yellow" style="padding: 8px; font-size: 12px;" onclick="alert('ٹاسک مکمل ہو گیا!')">مکمل کریں</button>
-            </div>
-            <div class="box-container" style="border-color: var(--yellow-theme);">
-                <div style="font-size: 13px; color: var(--text-main); font-weight: bold;">ٹاسک #2: چینل جوائن کریں</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">ریوارڈ: +$3.00</div>
-                <button class="btn btn-yellow" style="padding: 8px; font-size: 12px;" onclick="alert('ٹاسک مکمل ہو گیا!')">مکمل کریں</button>
+                <div style="font-size: 13px; color: var(--text-main); font-weight: bold;">ڈیلی ٹاسک: اشتہار ملاحظہ کریں</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">ریوارڈ: +$0.35 روزانہ</div>
+                <button class="btn btn-yellow" style="padding: 8px; font-size: 12px;" onclick="claimDailyTask()">ٹاسک مکمل کر کے $0.35 حاصل کریں</button>
             </div>
             <button class="btn btn-red" style="margin-top: 8px;" onclick="openPage('pageUserDashboard')">واپس ڈیش بورڈ</button>
         </div>
 
-        <!-- 7. کیش ول (Cash Will) کا الگ صفحہ - ریڈ تھیم -->
+        <!-- 7. کیش ول (اسپن وہیل) -->
         <div id="pageCashWill" class="page-box" style="border-color: var(--red-theme);">
-            <h1 style="color: var(--red-theme);">Cash Will (ریوارڈز)</h1>
-            <div class="box-container" style="border-color: var(--red-theme);">
-                <div style="font-size: 13px; color: var(--text-muted);">موجودہ لیول: <b class="text-red">Level 1</b></div>
-                <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">ریفرل پروگریس: <b style="color: #fff;">0 / 5 ریفرلز</b></div>
-                <div style="font-size: 12px; color: var(--yellow-theme); margin-top: 8px;">ریوارڈ بونس: $10.00</div>
+            <h1 style="color: var(--red-theme);">Cash Will (اسپن وہیل)</h1>
+            <div class="box-container" style="border-color: var(--red-theme); text-align: center;">
+                <div style="font-size: 12px; color: var(--text-muted);">ریفرل لیول سٹیٹس:</div>
+                <div style="font-size: 13px; font-weight: bold; color: var(--yellow-theme); margin: 4px 0;">Level 1 (5 ریفرلز = $3) / Level 2 (10 ریفرلز = $6)</div>
             </div>
-            <p style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 15px;">مزید ریفرل بنائیں اور اپنا کیش ول ریوارڈ حاصل کریں!</p>
+
+            <div class="wheel-container" id="spinWheel">
+                <div class="wheel-center-btn" onclick="spinTheWheel()">SPIN</div>
+                <div class="wheel-sectors" style="display: flex; flex-direction: column; justify-content: space-around; height: 100%; padding: 15px;">
+                    <div>$5 | $50 | $100</div>
+                    <div style="display: flex; justify-content: space-between; padding: 0 10px;">
+                        <span>$200</span>
+                        <span>$10</span>
+                    </div>
+                    <div>$15 | $20 | $110</div>
+                </div>
+            </div>
+
+            <div id="spinResultMsg" style="text-align: center; font-size: 13px; color: var(--neon-green); margin: 10px 0; font-weight: bold;"></div>
             <button class="btn btn-yellow" onclick="openPage('pageUserDashboard')">ڈیش بورڈ پر جائیں</button>
         </div>
 
-        <!-- 8. ایڈمن پینل کا الگ صفحہ (صرف آپ کے لیے: admin@clounode.com / admin1234) -->
+        <!-- 8. ایڈمن پینل (اسکرین شاٹ چیک اور اپروول سسٹم) -->
         <div id="pageAdminPanel" class="page-box" style="border-color: var(--yellow-theme);">
             <h1 style="color: var(--yellow-theme);">⭐ CFL - ایڈمن پینل</h1>
             
@@ -363,14 +423,14 @@
             </div>
 
             <div class="box-container">
-                <h3 style="font-size: 13px; color: var(--neon-green); margin-bottom: 6px;">ٹاپ اپ اور ودড্রাল ریکویسٹس</h3>
-                <div id="adminRequestsList" style="font-size: 12px; color: var(--text-muted); max-height: 80px; overflow-y: auto;">
+                <h3 style="font-size: 13px; color: var(--neon-green); margin-bottom: 6px;">یوزرز کی انوسٹمنٹ / اسکرین شاٹ ریکویسٹس</h3>
+                <div id="adminRequestsList" style="font-size: 12px; color: var(--text-muted); max-height: 120px; overflow-y: auto;">
                     کوئی نئی درخواست موجود نہیں۔
                 </div>
             </div>
 
             <div class="box-container">
-                <h3 style="font-size: 13px; color: var(--neon-green); margin-bottom: 6px;">یوزرز چیت مینجمنٹ</h3>
+                <h3 style="font-size: 13px; color: var(--neon-green); margin-bottom: 6px;">لائو چیت</h3>
                 <div class="chat-box" id="adminChatBox">
                     <div class="chat-msg">کوئی پیغام نہیں</div>
                 </div>
@@ -386,15 +446,21 @@
     </div>
 
     <script>
-        // لوکل سٹوریج سیٹ اپ
+        // لوکل سٹوریج ڈیٹا انیشلائزیشن
         if(!localStorage.getItem('cflAdminWallet')) {
-            localStorage.setItem('cflAdminWallet', 'T_Default_CFL_USDT_Wallet_Address_777');
+            localStorage.setItem('cflAdminWallet', 'T_USDT_CFL_Official_Secure_Wallet_999');
         }
         if(!localStorage.getItem('cflChats')) {
-            localStorage.setItem('cflChats', JSON.stringify([{sender: 'ایڈمن', text: 'خوش آمدید! کوئی سوال ہو تو پوچھیں۔'}]));
+            localStorage.setItem('cflChats', JSON.stringify([{sender: 'ایڈمن', text: 'خوش آمدید! انوسٹمنٹ کا اسکرین شاٹ لازمی اپ لوڈ کریں۔'}]));
         }
         if(!localStorage.getItem('cflRequests')) {
             localStorage.setItem('cflRequests', JSON.stringify([]));
+        }
+        if(!localStorage.getItem('userBalance')) {
+            localStorage.setItem('userBalance', '0.35');
+        }
+        if(!localStorage.getItem('userStatus')) {
+            localStorage.setItem('userStatus', 'Pending');
         }
 
         function openPage(pageId) {
@@ -407,6 +473,23 @@
             if(pageId === 'pageAdminPanel') {
                 document.getElementById('adminWalletInput').value = localStorage.getItem('cflAdminWallet');
                 loadAdminData();
+            }
+            if(pageId === 'pageUserDashboard') {
+                updateUserDataUI();
+            }
+        }
+
+        function updateUserDataUI() {
+            let bal = parseFloat(localStorage.getItem('userBalance') || '0.35');
+            let status = localStorage.getItem('userStatus');
+            document.getElementById('userBalanceDisplay').innerText = `$${bal.toFixed(2)}`;
+            let statusEl = document.getElementById('userStatusDisplay');
+            if(status === 'Approved') {
+                statusEl.style.color = 'var(--neon-green)';
+                statusEl.innerText = 'اسٹیٹس: ایکٹیو (انوسٹمنٹ منظور شدہ)';
+            } else {
+                statusEl.style.color = 'var(--red-theme)';
+                statusEl.innerText = 'اسٹیٹس: انوسٹمنٹ پینڈنگ (تصدیق کا انتظار ہے)';
             }
         }
 
@@ -432,13 +515,11 @@
                 return;
             }
 
-            // ایڈمن چیک
             if(email === 'admin@clounode.com' && pass === 'admin1234') {
                 openPage('pageAdminPanel');
                 return;
             }
 
-            // عام یوزر
             localStorage.setItem('currentUserEmail', email);
             openPage('pageUserDashboard');
             loadChats();
@@ -464,13 +545,13 @@
         function submitTopup() {
             let proof = document.getElementById('topupProof').value;
             if(!proof) {
-                alert('پیمنٹ پروف یا ٹرانزیکشن لکھیں!');
+                alert('براہ کرم اسکرین شاٹ یا انوسٹمنٹ پروف درج کریں!');
                 return;
             }
             let reqs = JSON.parse(localStorage.getItem('cflRequests'));
-            reqs.push({ type: 'TopUp', detail: proof, time: new Date().toLocaleDateString() });
+            reqs.push({ id: Date.now(), type: 'Investment/TopUp', detail: proof, status: 'Pending', time: new Date().toLocaleDateString() });
             localStorage.setItem('cflRequests', JSON.stringify(reqs));
-            alert('ٹاپ اپ کی درخواست ایڈمن کو بھیج دی گئی ہے!');
+            alert('انوسٹمنٹ اسکرین شاٹ ایڈمن کو بھیج دیا گیا ہے! تصدیق کا انتظار کریں۔');
             document.getElementById('topupProof').value = '';
             openPage('pageUserDashboard');
         }
@@ -483,10 +564,34 @@
                 return;
             }
             let reqs = JSON.parse(localStorage.getItem('cflRequests'));
-            reqs.push({ type: 'Withdraw', detail: `${amt}$ to ${addr}`, time: new Date().toLocaleDateString() });
+            reqs.push({ id: Date.now(), type: 'Withdraw', detail: `${amt}$ to ${addr}`, status: 'Pending', time: new Date().toLocaleDateString() });
             localStorage.setItem('cflRequests', JSON.stringify(reqs));
             alert('ودড্রال کی درخواست بھیج دی گئی ہے!');
             openPage('pageUserDashboard');
+        }
+
+        function claimDailyTask() {
+            let bal = parseFloat(localStorage.getItem('userBalance') || '0.35');
+            bal += 0.35;
+            localStorage.setItem('userBalance', bal.toFixed(2));
+            alert('مبارک ہو! آپ کو ڈیلی ٹاسک کا $0.35 ریوارڈ مل گیا ہے!');
+            openPage('pageUserDashboard');
+        }
+
+        function spinTheWheel() {
+            const prizes = [5, 10, 15, 20, 50, 100, 110, 200];
+            let randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+            
+            let wheel = document.getElementById('spinWheel');
+            let randomDeg = Math.floor(Math.random() * 3600) + 720;
+            wheel.style.transform = `rotate(${randomDeg}deg)`;
+
+            setTimeout(() => {
+                document.getElementById('spinResultMsg').innerText = `مبارک ہو! آپ نے کیش وہیل سے $${randomPrize} جیت لیے ہیں!`;
+                let bal = parseFloat(localStorage.getItem('userBalance') || '0.35');
+                bal += randomPrize;
+                localStorage.setItem('userBalance', bal.toFixed(2));
+            }, 4000);
         }
 
         function loadAdminData() {
@@ -497,11 +602,28 @@
                 return;
             }
             let html = '';
-            reqs.forEach((r) => {
-                html += `<div style="padding:5px; border-bottom:1px solid #163823;">[${r.type}] ${r.detail} (${r.time})</div>`;
+            reqs.forEach((r, index) => {
+                html += `<div style="padding:8px; border-bottom:1px solid #163823; margin-bottom: 5px;">
+                    <b>[${r.type}]</b> ${r.detail} <br>
+                    <span style="color:var(--yellow-theme);">سٹیٹس: ${r.status}</span><br>`;
+                if(r.status === 'Pending') {
+                    html += `<button class="btn btn-yellow" style="padding:4px 10px; font-size:11px; margin-top:4px; width:auto;" onclick="approveRequest(${index})">منظور کریں (Approve)</button>`;
+                }
+                html += `</div>`;
             });
             listDiv.innerHTML = html;
             loadChats();
+        }
+
+        function approveRequest(index) {
+            let reqs = JSON.parse(localStorage.getItem('cflRequests'));
+            reqs[index].status = 'Approved';
+            localStorage.setItem('cflRequests', JSON.stringify(reqs));
+            if(reqs[index].type === 'Investment/TopUp') {
+                localStorage.setItem('userStatus', 'Approved');
+            }
+            alert('درخواست کامیابی سے منظور کر دی گئی!');
+            loadAdminData();
         }
 
         function sendUserChat() {
@@ -515,7 +637,7 @@
         }
 
         function sendAdminChat() {
-            let msg = document.getElementById('adminChatInput').value;
+            let msg = document.getElementById('adminChatInput5' || 'adminChatInput').value;
             if(!msg) return;
             let chats = JSON.parse(localStorage.getItem('cflChats'));
             chats.push({ sender: 'ایڈمن', text: msg });
