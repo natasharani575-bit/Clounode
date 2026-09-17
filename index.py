@@ -6,7 +6,8 @@ from flask import Flask, render_template_string, request, redirect, url_for, ses
 app = Flask(__name__)
 app.secret_key = 'cfl_secure_secret_key_12345'
 
-DB_PATH = '/tmp/cfl_database_v6.db'
+DB_PATH = 'cfl_database_v6.db'
+
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
