@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudNode - کلاؤڈ نوڈ</title>
+    <style>
+        :root {
+            --main-pink: #ff99bb;
+            --darker-pink: #ff6699;
+            --text-black: #000000;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-black);
+        }
+
+        body {
+            background-color: #ffb6c1;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: var(--main-pink);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 3px solid var(--text-black);
+        }
+
+        .section {
+            display: none;
+            padding: 20px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .banner {
+            background: var(--darker-pink);
+            color: var(--text-black);
+            text-align: center;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            border-bottom: 3px solid var(--text-black);
+        }
+
+        h2, h3 {
+            color: var(--text-black);
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--text-black);
+            border-radius: 6px;
+            font-size: 15px;
+            background: var(--white);
+            color: var(--text-black);
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--text-black);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .switch-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .switch-text a {
+            color: #000;
+            text-decoration: underline;
+        }
+
+        /* User Home Dashboard */
+        .balance-box {
+            background: var(--white);
+            border: 2px solid var(--text-black);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .menu-item {
+            background: var(--white);
+            border: 2px solid var(--text-black);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .menu-item:hover {
+            background: var(--darker-pink);
+        }
+
+        .referral-box {
+            background: var(--white);
+            border: 2px solid var(--text-black);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        /* Admin Panel Specific Style */
+        .admin-card {
+            background: var(--white);
+            border: 2px solid var(--text-black);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .chat-box {
+            height: 150px;
+            border: 2px solid var(--text-black);
+            border-radius: 6px;
+            padding: 8px;
+            overflow-y: auto;
+            background: var(--white);
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="banner">
+            CloudNode (کلاؤڈ نوڈ)
+        </div>
+
+        <!-- 1. Registration Page -->
+        <div id="register-section" class="section active">
+            <h2>نیا اکاؤنٹ بنائیں (Register)</h2>
+            <div class="form-group">
+                <label>فون نمبر</label>
+                <input type="text" id="reg-phone" placeholder="فون نمبر درج کریں">
+            </div>
+            <div class="form-group">
+                <label>ای میل</label>
+                <input type="email" id="reg-email" placeholder="example@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>پاس ورڈ</label>
+                <input type="password" id="reg-pass" placeholder="پاس ورڈ درج کریں">
+            </div>
+            <div class="form-group">
+                <label>ریفرل کوڈ (خودکار)</label>
+                <input type="text" id="reg-ref" value="CN-78654" readonly>
+            </div>
+            <button class="btn" onclick="registerUser()">رجسٹر کریں</button>
+            <div class="switch-text">
+                پہلے سے اکاؤنٹ ہے؟ <a href="#" onclick="showSection('login-section')">لاگ اِن کریں</a>
+            </div>
+            <div class="switch-text" style="margin-top: 15px;">
+                <a href="#" onclick="showSection('admin-section')">⚙️ ایڈمن پینل کھولیں</a>
+            </div>
+        </div>
+
+        <!-- 2. Login Page -->
+        <div id="login-section" class="section">
+            <h2>لاگ اِن (Login)</h2>
+            <div class="form-group">
+                <label>ای میل</label>
+                <input type="email" id="login-email" placeholder="example@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>پاس ورڈ</label>
+                <input type="password" id="login-pass" placeholder="پاس ورڈ درج کریں">
+            </div>
+            <button class="btn" onclick="loginUser()">لاگ اِن کریں</button>
+            <div class="switch-text">
+                اکاؤنٹ نہیں ہے؟ <a href="#" onclick="showSection('register-section')">رجسٹر کریں</a>
+            </div>
+        </div>
+
+        <!-- 3. User Home Dashboard -->
+        <div id="home-section" class="section">
+            <div class="balance-box">
+                <p><b>موجودہ بیلنس</b></p>
+                <h3 id="user-curr-balance">$15.00</h3>
+            </div>
+
+            <div class="referral-box">
+                <p><b>آپ کا ریفرل لنک:</b></p>
+                <input type="text" value="https://cloudnode.com/ref?id=CN-78654" readonly style="font-size: 12px; margin-top: 5px;">
+                <p style="margin-top: 5px;"><b>ڈائریکٹ ممبرز:</b> <span id="direct-count">1</span> | <b>کل ممبرز:</b> <span id="total-count">2</span></p>
+            </div>
+
+            <div class="grid-menu">
+                <div class="menu-item" onclick="showSection('investment-section')">💳 ٹاپ اَپ / انویسٹمنٹ</div>
+                <div class="menu-item" onclick="showSection('withdraw-section')">💸 وِدرا (Withdraw)</div>
+                <div class="menu-item" onclick="showSection('task-section')">📋 روزانہ ٹاسک</div>
+                <div class="menu-item" onclick="showSection('reward-section')">🧸 ریوارڈ (Teddy)</div>
+                <div class="menu-item" onclick="showSection('chat-section')">💬 لائیو چیٹ</div>
+                <div class="menu-item" onclick="showSection('login-section')">🚪 لاگ آؤٹ</div>
+            </div>
+            <p style="font-size: 12px; text-align: center;">نوٹ: رقم 24 گھنٹے میں موصول ہو جائے گی۔</p>
+        </div>
+
+        <!-- 4. Investment Section -->
+        <div id="investment-section" class="section">
+            <h2>BEP-20 انویسٹمنٹ</h2>
+            <div class="form-group">
+                <label>ایڈمن بی ای پی ۲۰ ایڈریس</label>
+                <input type="text" value="0xCloudNodeBEP20WalletAddress789..." readonly>
+            </div>
+            <div class="form-group">
+                <label>پلان منتخب کریں</label>
+                <select>
+                    <option>$5 پلان</option>
+                    <option>$15 پلان</option>
+                    <option>$30 پلان ($0.95 روزانہ)</option>
+                    <option>$100 پلان ($2.35 روزانہ)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ٹرانزیکشن آئی ڈی (TxID)</label>
+                <input type="text" placeholder="TxID درج کریں">
+            </div>
+            <div class="form-group">
+                <label>اسکرین شاٹ اپ لوڈ کریں</label>
+                <input type="file">
+            </div>
+            <button class="btn" onclick="alert('انویسٹمنٹ جمع ہو گئی!'); showSection('home-section');">جمع کروائیں</button>
+            <button class="btn" style="background:#555;" onclick="showSection('home-section')">वापस</button>
+        </div>
+
+        <!-- 5. Withdraw Section -->
+        <div id="withdraw-section" class="section">
+            <h2>وِدرا (Withdraw) سسٹم</h2>
+            <div class="form-group">
+                <label>BEP-20 ایڈریس درج کریں</label>
+                <input type="text" placeholder="अपना BEP-20 एड्रेस دیں۔">
+            </div>
+            <div class="form-group">
+                <label>رقم منتخب کریں</label>
+                <select>
+                    <option>$8 وِدرا (فیس: $0.95)</option>
+                    <option>$25 وِدرا (فیس: $1.00)</option>
+                    <option>$100 وِدرا (فیس: $3.00)</option>
+                </select>
+            </div>
+            <button class="btn" onclick="alert('وِدرا کی درخواست لگ گئی ہے!'); showSection('home-section');">وِدرا کی درخواست لگائیں</button>
+            <button class="btn" style="background:#555;" onclick="showSection('home-section')">वापस</button>
+        </div>
+
+        <!-- 6. Task Section -->
+        <div id="task-section" class="section">
+            <h2>روزانہ ٹاسک</h2>
+            <p style="text-align: center; margin-bottom: 15px;">ہر 24 گھنٹے بعد ٹاسک دستیاب ہے۔</p>
+            <button class="btn" onclick="alert('ٹاسک مکمل ہو گیا!');">آج کا ٹاسک مکمل کریں</button>
+            <button class="btn" style="background:#555;" onclick="showSection('home-section')">वापस</button>
+        </div>
+
+        <!-- 7. Reward Section -->
+        <div id="reward-section" class="section">
+            <h2>ریوارڈ (Teddy Bear)</h2>
+            <div style="text-align: center; background:#fff; border:2px solid #000; padding:15px; border-radius:8px;">
+                <div style="font-size: 50px;">🧸</div>
+                <p><b>ایڈمن ریوارڈ:</b> $5.00</p>
+            </div>
+            <button class="btn" style="background:#555; margin-top:15px;" onclick="showSection('home-section')">वापस</button>
+        </div>
+
+        <!-- 8. Live Chat Section -->
+        <div id="chat-section" class="section">
+            <h2>لائیو چیٹ (ایڈمن کے ساتھ)</h2>
+            <div class="chat-box" id="user-chat-box">
+                <p><b>ایڈمن:</b> آپ کا کوئی مسئلہ ہے؟</p>
+            </div>
+            <div class="form-group">
+                <input type="text" id="user-chat-input" placeholder="پیغام لکھیں...">
+            </div>
+            <button class="btn" onclick="sendUserChat()">پیغام بھیجیں</button>
+            <button class="btn" style="background:#555;" onclick="showSection('home-section')">वापस</button>
+        </div>
+
+        <!-- 9. ADMIN PANEL (Completely Separate) -->
+        <div id="admin-section" class="section">
+            <h2 style="background: var(--darker-pink); padding: 5px; border-radius: 4px;">⚙️ ایڈمن پینل (Admin Panel)</h2>
+            
+            <p style="font-weight: bold; margin-top: 10px;">👤 صارفین کا الگ ریکارڈ:</p>
+            <div class="admin-card">
+                <p><b>یوزر ID:</b> CN-78654</p>
+                <p><b>ای میل:</b> Najeeebkhan376@gmail.com</p>
+                <p><b>ڈائریکٹ ممبرز:</b> 1 | <b>کل ممبرز:</b> 2</p>
+                <p><b>بیلنس:</b> $15.00 | <b>لیول:</b> 1</p>
+            </div>
+
+            <p style="font-weight: bold; margin-top: 10px;">💬 الگ الگ لائیو چیٹ ریکارڈ:</p>
+            <div class="admin-card">
+                <p><b>Najeeebkhan376@gmail.com की چیٹ:</b></p>
+                <div class="chat-box" style="height: 100px;">
+                    <p><b>یوزر:</b> میرا وِدرا کب ملے گا؟</p>
+                </div>
+                <input type="text" placeholder="ایڈمن کا جواب..." style="font-size: 13px; margin-bottom: 5px;">
+                <button class="btn" style="padding: 5px; font-size: 13px;">جواب بھیجیں</button>
+            </div>
+
+            <p style="font-weight: bold; margin-top: 10px;">💸 وِدرا اور انویسٹمنٹ کی درخواستیں:</p>
+            <div class="admin-card">
+                <p><b>وِدرا درخواست:</b> $25 (Najeeebkhan376@gmail.com)</p>
+                <p><b>BEP-20 ایڈریس:</b> 0x71C...3aF</p>
+                <button class="btn" style="background: green; padding: 5px; font-size: 13px; margin-top: 5px;" onclick="alert('منظور کر لیا گیا!')">منظور کریں</button>
+            </div>
+
+            <button class="btn" style="background: var(--text-black); margin-top: 15px;" onclick="showSection('register-section')">لاگ آؤٹ / یوزر موڈ پر جائیں</button>
+        </div>
+
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function registerUser() {
+            alert('اکاؤنٹ کامیابی سے بن گیا!');
+            showSection('login-section');
+        }
+
+        function loginUser() {
+            alert('لاگ اِن کامیاب ہو گیا!');
+            showSection('home-section');
+        }
+
+        function sendUserChat() {
+            const input = document.getElementById('user-chat-input');
+            const chatBox = document.getElementById('user-chat-box');
+            if(input.value.trim() !== '') {
+                chatBox.innerHTML += `<p><b>آپ:</b> ${input.value}</p>`;
+                input.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
