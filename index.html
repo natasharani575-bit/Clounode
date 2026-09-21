@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudNode - کلاؤڈ نوڈ (پروفیشنل ورژن)</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --dark-blue: #0056b3;
+            --light-blue: #e3f2fd;
+            --accent-blue: #17a2b8;
+            --bg-color: #f4f9fc;
+            --text-dark: #222222;
+            --white: #ffffff;
+            --border-color: #bce8f1;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+        }
+
+        .section {
+            display: none;
+            padding: 25px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .banner {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+            text-align: center;
+            padding: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 4px solid var(--accent-blue);
+        }
+
+        h2, h3 {
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: var(--dark-blue);
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 15px;
+            background: var(--white);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: var(--dark-blue);
+        }
+
+        .switch-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        .switch-text span {
+            color: var(--primary-blue);
+            text-decoration: underline;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px;
+        }
+
+        /* Dashboard Style */
+        .balance-box {
+            background: linear-gradient(135deg, var(--light-blue), #d0e8ff);
+            border: 2px solid var(--primary-blue);
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .balance-box h3 {
+            font-size: 32px;
+            color: var(--dark-blue);
+            margin-top: 5px;
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            background: var(--light-blue);
+            border: 2px solid var(--primary-blue);
+            padding: 18px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            color: var(--dark-blue);
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-item span.icon {
+            font-size: 28px;
+        }
+
+        .menu-item:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .menu-item:hover span {
+            color: var(--white);
+        }
+
+        .referral-box {
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* Admin Dashboard Modern Styling */
+        .admin-card {
+            background: var(--light-blue);
+            border: 2px solid var(--primary-blue);
+            padding: 15px;
+            border-radius: 14px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .screenshot-preview {
+            width: 100%;
+            height: 120px;
+            border: 2px dashed var(--primary-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            color: #666;
+            margin-top: 8px;
+            font-size: 13px;
+            overflow: hidden;
+        }
+
+        .screenshot-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge-pending {
+            background: var(--warning-color);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .badge-approved {
+            background: var(--success-color);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .badge-rejected {
+            background: var(--danger-color);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .chat-box {
+            height: 160px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            overflow-y: auto;
+            background: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+        .back-btn:hover {
+            background: #5a6268;
+        }
+
+        .btn-success { background: var(--success-color); }
+        .btn-success:hover { background: #218838; }
+        .btn-danger { background: var(--danger-color); }
+        .btn-danger:hover { background: #c82333; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Banner -->
+        <div class="banner">
+            <span>CloudNode</span> (کلاؤڈ نوڈ)
+        </div>
+
+        <!-- 1. Registration Page -->
+        <div id="register-section" class="section active">
+            <h2>نیا اکاؤنٹ بنائیں</h2>
+            <div class="form-group">
+                <label>فون نمبر</label>
+                <input type="text" id="reg-phone" placeholder="اپنا فون نمبر درج کریں">
+            </div>
+            <div class="form-group">
+                <label>ای میل</label>
+                <input type="email" id="reg-email" placeholder="example@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>پاس ورڈ</label>
+                <input type="password" id="reg-pass" placeholder="پاس ورڈ درج کریں">
+            </div>
+            <div class="form-group">
+                <label>ریفرل کوڈ (خودکار)</label>
+                <input type="text" id="reg-ref" value="CN-99881" readonly>
+            </div>
+            <button class="btn" onclick="registerUser()">رجسٹر کریں</button>
+            <div class="switch-text">
+                پہلے سے اکاؤنٹ ہے؟ <span onclick="switchPage('login-section')">لاگ اِن کریں</span>
+            </div>
+        </div>
+
+        <!-- 2. Login Page -->
+        <div id="login-section" class="section">
+            <h2>لاگ اِن (Login)</h2>
+            <div class="form-group">
+                <label>ای میل</label>
+                <input type="email" id="login-email" placeholder="ای میل درج کریں">
+            </div>
+            <div class="form-group">
+                <label>پاس ورڈ</label>
+                <input type="password" id="login-pass" placeholder="پاس ورڈ درج کریں">
+            </div>
+            <button class="btn" onclick="loginUser()">لاگ اِن کریں</button>
+            <div class="switch-text">
+                اکاؤنٹ نہیں ہے؟ <span onclick="switchPage('register-section')">رجسٹر کریں</span>
+            </div>
+        </div>
+
+        <!-- 3. User Home Dashboard -->
+        <div id="home-section" class="section">
+            <div class="balance-box">
+                <p><b>موجودہ بیلنس</b></p>
+                <h3 id="display-balance">$0.00</h3>
+            </div>
+
+            <!-- Live Status Notification Banner -->
+            <div id="user-status-banner" style="background: #fff3cd; border: 2px solid #ffeeba; padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; color: #856404; font-weight: bold; font-size: 14px;">
+                ⚠️ اسٹیٹس: <span id="user-live-status-text">نیا اکاؤنٹ (انویسٹمنٹ پینڈنگ یا غیر فعال)</span>
+            </div>
+
+            <div class="referral-box">
+                <p><b>🔗 آپ کا ریفرل لنک:</b></p>
+                <input type="text" value="https://cloudnode.com/ref?id=CN-99881" readonly style="font-size: 13px; margin-top: 5px; margin-bottom: 8px;">
+                <p><b>ڈائریکٹ ممبرز:</b> 0 | <b>ان ڈائریکٹ ممبرز:</b> 0 | <b>کل ممبرز:</b> 0</p>
+            </div>
+
+            <div class="grid-menu">
+                <div class="menu-item" onclick="switchPage('investment-section')">
+                    <span class="icon">💳</span>
+                    <span>ٹاپ اَپ / انویسٹمنٹ</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('withdraw-section')">
+                    <span class="icon">💸</span>
+                    <span>وِدرا (Withdraw)</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('task-section')">
+                    <span class="icon">📋</span>
+                    <span>روزانہ ٹاسک</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('reward-section')">
+                    <span class="icon">🧸</span>
+                    <span>ریوارڈ (Teddy)</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('chat-section')">
+                    <span class="icon">💬</span>
+                    <span>لائیو چیٹ</span>
+                </div>
+                <div class="menu-item" onclick="switchPage('login-section')">
+                    <span class="icon">🚪</span>
+                    <span>لاگ آؤٹ</span>
+                </div>
+            </div>
+            <p style="font-size: 13px; text-align: center; color: #555;">نوٹ: تمام رقوم 24 گھنٹے کے اندر موصول ہو جاتی ہیں۔</p>
+        </div>
+
+        <!-- 4. Investment Section -->
+        <div id="investment-section" class="section">
+            <h2>BEP-20 انویسٹمنٹ پلینز</h2>
+            <div class="form-group">
+                <label>ایڈمن بی ای پی ۲۰ ایڈریس</label>
+                <input type="text" value="0xCloudNodeBEP20AdminWalletAddress789..." readonly>
+            </div>
+            <div class="form-group">
+                <label>پلان منتخب کریں (فیس اور کٹوتیاں شامل)</label>
+                <select id="inv-plan">
+                    <option value="5">$5 پلان (نیٹ ریٹرن: $7)</option>
+                    <option value="15">$15 پلان (ریٹرن $20 - فیس: $0)</option>
+                    <option value="30">$30 پلان (روزانہ $0.95 - فیس: $0)</option>
+                    <option value="100">$100 پلان (روزانہ $2.35 - فیس: $0)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>اپنا BEP-20 والٹ ایڈریس درج کریں</label>
+                <input type="text" id="user-bep20-input" placeholder="0x سے شروع ہونے والا ایڈریس درج کریں">
+            </div>
+            <div class="form-group">
+                <label>ٹرانزیکشن آئی ڈی (TxID / ہسٹری)</label>
+                <input type="text" id="user-txid-input" placeholder="TxID یا ٹرانزیکشن ہسٹری درج کریں">
+            </div>
+            <div class="form-group">
+                <label>ادائیگی کا اسکرین شاٹ اپ لوڈ کریں</label>
+                <input type="file" id="user-screenshot-input" accept="image/*" onchange="previewImage(event)">
+            </div>
+            <button class="btn" onclick="submitInvestment()">انویسٹمنٹ جمع کروائیں</button>
+            <button class="btn back-btn" onclick="switchPage('home-section')">واپس جائیں</button>
+        </div>
+
+        <!-- 5. Withdraw Section -->
+        <div id="withdraw-section" class="section">
+            <h2>وِدرا (Withdraw) سسٹم</h2>
+            <div class="form-group">
+                <label>BEP-20 وِدرا ایڈریس</label>
+                <input type="text" id="user-withdraw-addr" placeholder="0x سے شروع ہونے والا ایڈریس درج کریں">
+            </div>
+            <div class="form-group">
+                <label>رقم اور فیس کی تفصیل</label>
+                <select id="user-withdraw-amount">
+                    <option value="8">$8 وِدرا (ایڈمن کٹ / فیس: $0.95)</option>
+                    <option value="25">$25 وِدرا (ایڈمن کٹ / فیس: $1.00)</option>
+                    <option value="50">$50 وِدرا (ایڈمن کٹ / فیس: $1.50)</option>
+                    <option value="100">$100 وِدرا (ایڈمن کٹ / فیس: $3.00)</option>
+                </select>
+            </div>
+            <button class="btn" onclick="submitWithdraw()">وِدرا کی درخواست لگائیں</button>
+            <button class="btn back-btn" onclick="switchPage('home-section')">واپس جائیں</button>
+        </div>
+
+        <!-- 6. Task Section -->
+        <div id="task-section" class="section">
+            <h2>روزانہ ٹاسک</h2>
+            <p style="text-align: center; margin-bottom: 15px;">ہر 24 گھنٹے بعد ٹاسک دستیاب ہوتا ہے۔</p>
+            <button class="btn" onclick="alert('آج کا ٹاسک کامیابی سے مکمل ہو گیا!');">آج کا ٹاسک مکمل کریں</button>
+            <button class="btn back-btn" onclick="switchPage('home-section')">واپس جائیں</button>
+        </div>
+
+        <!-- 7. Reward Section (Teddy Bear) -->
+        <div id="reward-section" class="section">
+            <h2>ریوارڈ سسٹم (Teddy)</h2>
+            <div style="text-align: center; background: var(--light-blue); border: 2px solid var(--primary-blue); padding: 20px; border-radius: 12px;">
+                <div style="font-size: 60px; margin-bottom: 10px;">🧸</div>
+                <p><b>آپ کا موصول شدہ ریوارڈ:</b></p>
+                <h3 id="user-reward-display" style="color: var(--dark-blue); margin-top: 5px;">$0.00</h3>
+            </div>
+            <button class="btn back-btn" style="margin-top: 20px;" onclick="switchPage('home-section')">واپس جائیں</button>
+        </div>
+
+        <!-- 8. Live Chat Section -->
+        <div id="chat-section" class="section">
+            <h2>لائیو چیٹ (ایڈمن کے ساتھ)</h2>
+            <div class="chat-box" id="user-chat-box">
+                <p><b>ایڈمن:</b> خوش آمدید! بتائیں ہم آپ کی کیا مدد کر سکتے ہیں؟</p>
+            </div>
+            <div class="form-group">
+                <input type="text" id="user-chat-input" placeholder="پیغام لکھیں...">
+            </div>
+            <button class="btn" onclick="sendUserChat()">پیغام بھیجیں</button>
+            <button class="btn back-btn" onclick="switchPage('home-section')">واپس جائیں</button>
+        </div>
+
+        <!-- 9. SECURE ADMIN PANEL -->
+        <div id="admin-section" class="section">
+            <h2 style="background: var(--dark-blue); color: var(--white); padding: 12px; border-radius: 8px;">⚙️ ایڈمن کنٹرول پینل</h2>
+            
+            <p style="font-weight: bold; margin-top: 10px; color: var(--dark-blue);">👥 صارفین کا ریکارڈ اور انویسٹمنٹ مانیٹر:</p>
+            <div class="admin-card">
+                <p><b>ای میل:</b> Najeeebkhan376@gmail.com</p>
+                <p><b>موجودہ اسٹیٹس:</b> <span id="admin-user-status-badge" class="badge-pending">پینڈنگ (Pending)</span></p>
+                <div id="admin-investment-details-view" style="margin-top: 8px; color: #444;">
+                    <p>کوئی انویسٹمنٹ موصول نہیں ہوئی۔</p>
+                </div>
+                
+                <!-- Screenshot Preview Box for Admin -->
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>یوزر کا اپ لوڈ کردہ اسکرین شاٹ:</label>
+                    <div class="screenshot-preview" id="admin-screenshot-container">
+                        کوئی تصویر نہیں دی گئی
+                    </div>
+                </div>
+
+                <!-- Approve / Reject Buttons for Investment -->
+                <div style="display: flex; gap: 10px; margin-top: 12px;" id="admin-investment-action-buttons">
+                    <button class="btn btn-success" style="margin:0;" onclick="adminApproveInvestment()">کنفرم / اپروف کریں</button>
+                    <button class="btn btn-danger" style="margin:0;" onclick="adminRejectInvestment()">ریجیکٹ کریں</button>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="font-size: 13px;">بیلنس کنٹرول (مرضی کا بیلنس سیٹ کریں):</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" id="admin-new-balance" value="0" style="padding: 6px;">
+                        <button class="btn" style="margin:0; width: 100px; padding: 6px; font-size: 13px;" onclick="adminUpdateBalance()">اپڈیٹ</button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 10px;">
+                    <label style="font-size: 13px;">🎁 ریوارڈ / ٹاسک رقم سلیکٹ کریں:</label>
+                    <div style="display: flex; gap: 5px;">
+                        <select id="admin-reward-select" style="padding: 6px; font-size: 13px;">
+                            <option value="1">$1 ڈالر</option>
+                            <option value="2">$2 ڈالر</option>
+                            <option value="3">$3 ڈالر</option>
+                            <option value="4">$4 ڈالر</option>
+                            <option value="5" selected>$5 ڈالر</option>
+                            <option value="10">$10 ڈالر</option>
+                        </select>
+                        <button class="btn btn-success" style="margin:0; width: 110px; padding: 6px; font-size: 13px;" onclick="adminSendReward()">ریوارڈ بھیجیں</button>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-weight: bold; margin-top: 15px; color: var(--dark-blue);">💸 وِدرا کی درخواستیں اور کنٹرول:</p>
+            <div class="admin-card" id="admin-withdraw-request-box">
+                <p>کوئی نئی وِدرا درخواست موجود نہیں ہے۔</p>
+            </div>
+
+            <p style="font-weight: bold; margin-top: 15px; color: var(--dark-blue);">💬 لائیو چیٹ ریکارڈ:</p>
+            <div class="admin-card">
+                <p><b>Najeeebkhan376@gmail.com کی چیٹ:</b></p>
+                <div class="chat-box" id="admin-chat-display" style="height: 100px;">
+                    <p><b>یوزر:</b> ہیلو ایڈمن!</p>
+                </div>
+                <input type="text" id="admin-chat-reply" placeholder="ایڈمن کا جواب..." style="font-size: 13px; margin-bottom: 5px;">
+                <button class="btn" style="padding: 6px; font-size: 13px; margin-top: 0;" onclick="adminSendChat()">جواب بھیجیں</button>
+            </div>
+
+            <button class="btn" style="background: #333; margin-top: 20px;" onclick="switchPage('login-section')">لاگ آؤٹ (ایڈمن پینل بند کریں)</button>
+        </div>
+
+    </div>
+
+    <script>
+        let userBalance = 0.00;
+        let userReward = 0.00;
+        let hasInvested = false;
+        let uploadedImageSrc = "";
+
+        function switchPage(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.add('active');
+            }
+        }
+
+        function registerUser() {
+            alert('اکاؤنٹ کامیابی سے بن گیا ہے! اب لاگ اِن کریں۔');
+            switchPage('login-section');
+        }
+
+        function loginUser() {
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if (email === 'natashaali476@gmail.com' && pass === 'natashaali5678') {
+                alert('ایڈمن لاگ اِن کامیاب ہو گیا!');
+                switchPage('admin-section');
+            } else if (email !== '' && pass !== '') {
+                alert('لاگ اِن کامیاب ہو گیا!');
+                switchPage('home-section');
+            } else {
+                alert('براہ کرم صحیح ای میل اور پاس ورڈ درج کریں!');
+            }
+        }
+
+        function checkAccessAndOpen(sectionId) {
+            if (!hasInvested) {
+                alert('⚠️ آپ نیا ممبر ہیں! ویب سائٹ کے اس فیچر کو استعمال کرنے کے لیے پہلے انویسٹمنٹ مکمل کریں۔');
+                switchPage('investment-section');
+            } else {
+                switchPage(sectionId);
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImageSrc = e.target.result;
+                    document.getElementById('admin-screenshot-container').innerHTML = `<img src="${uploadedImageSrc}" alt="Screenshot">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function submitInvestment() {
+            const bep20Addr = document.getElementById('user-bep20-input').value.trim();
+            const txid = document.getElementById('user-txid-input').value.trim();
+            const plan = document.getElementById('inv-plan').value;
+            
+            if(bep20Addr === '' || !bep20Addr.startsWith('0x')) {
+                alert('براہ کرم اپنا درست BEP-20 ایڈریس (جو 0x سے شروع ہو) درج کریں!');
+                return;
+            }
+            if(txid === '') {
+                alert('براہ کرم اپنی ٹرانزیکشن آئی ڈی (TxID / ہسٹری) درج کریں!');
+                return;
+            }
+
+            // Update Admin View with Pending status and details
+            document.getElementById('admin-user-status-badge').className = "badge-pending";
+            document.getElementById('admin-user-status-badge.innerText') = "پینڈنگ (Pending)";
+            document.getElementById('admin-investment-details-view').innerHTML = `
+                <p><b>منتخب پلین:</b> $${plan}</p>
+                <p><b>BEP-20 ایڈریس:</b> ${bep20Addr}</p>
+                <p><b>TxID:</b> ${txid}</p>
+            `;
+
+            if(uploadedImageSrc !== "") {
+                document.getElementById('admin-screenshot-container').innerHTML = `<img src="${uploadedImageSrc}" alt="Screenshot">`;
+            }
+
+            // Update User Banner to Pending
+            document.getElementById('user-live-status-text').innerText = "آپ کی انویسٹمنٹ پینڈنگ (Pending) پر ہے، ایڈمن کے تصدیق کرنے کا انتظار کریں۔";
+            document.getElementById('user-status-banner').style.background = "#fff3cd";
+            document.getElementById('user-status-banner').style.color = "#856404";
+
+            alert('آپ کی انویسٹمنٹ کامیابی سے جمع ہو گئی ہے اور اسٹیٹس پینڈنگ پر لگ گیا ہے!');
+            switchPage('home-section');
+        }
+
+        function adminApproveInvestment() {
+            hasInvested = true;
+            document.getElementById('admin-user-status-badge').className = "badge-approved";
+            document.getElementById('admin-user-status-badge').innerText = "منظور شدہ (Approved)";
+            
+            document.getElementById('user-live-status-text').innerText = "آپ کا اکاؤنٹ فعال (Active) اور انویسٹمنٹ منظور ہو چکی ہے!";
+            document.getElementById('user-status-banner').style.background = "#d4edda";
+            document.getElementById('user-status-banner').style.color = "#155724";
+
+            alert('انویسٹمنٹ کامیابی سے منظور (Approve) کر دی گئی ہے!');
+        }
+
+        function adminRejectInvestment() {
+            hasInvested = false;
+            document.getElementById('admin-user-status-badge').className = "badge-rejected";
+            document.getElementById('admin-user-status-badge').innerText = "مسترد شدہ (Rejected)";
+            
+            document.getElementById('user-live-status-text').innerText = "آپ کی انویسٹمنٹ مسترد کر دی گئی ہے، دوبارہ درست معلومات کے ساتھ بھیجیں۔";
+            document.getElementById('user-status-banner').style.background = "#f8d7da";
+            document.getElementById('user-status-banner').style.color = "#721c24";
+
+            alert('انویسٹمنٹ ریجیکٹ کر دی گئی ہے!');
+        }
+
+        function submitWithdraw() {
+            const addr = document.getElementById('user-withdraw-addr').value.trim();
+            const amtElem = document.getElementById('user-withdraw-amount');
+            const amt = amtElem.value;
+            
+            if(addr === '' || !addr.startsWith('0x')) {
+                alert('براہ کرم درست BEP-20 وِدرا ایڈریس (جو 0x سے شروع ہو) درج کریں!');
+                return;
+            }
+            
+            document.getElementById('admin-withdraw-request-box').innerHTML = `
+                <p><b>یوزر:</b> Najeeebkhan376@gmail.com</p>
+                <p><b>وِدرا رقم:</b> $${amt} | <span class="badge-pending">پینڈنگ</span></p>
+                <p><b>BEP-20 ایڈریس:</b> ${addr}</p>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-success" style="padding: 6px; font-size: 13px; margin:0;" onclick="approveWithdraw()">وِدرا منظور کریں</button>
+                    <button class="btn btn-danger" style="padding: 6px; font-size: 13px; margin:0;" onclick="rejectWithdraw()">وِدرا ریجیکٹ کریں</button>
+                </div>
+            `;
+            alert('وِدرا کی درخواست پینڈنگ حالت میں ایڈمن کو بھیج دی گئی ہے!');
+            switchPage('home-section');
+        }
+
+        function approveWithdraw() {
+            document.getElementById('admin-withdraw-request-box').innerHTML = `<p style="color: green; font-weight: bold;">✅ وِدرا منظور ہو کر بھیج دیا گیا ہے!</p>`;
+            alert('وِدرا کامیابی سے اپروف کر دیا گیا ہے!');
+        }
+
+        function rejectWithdraw() {
+            document.getElementById('admin-withdraw-request-box').innerHTML = `<p style="color: red; font-weight: bold;">❌ وِدرا کی درخواست مسترد کر دی گئی ہے۔</p>`;
+            alert('وِدرا ریجیکٹ کر دیا گیا ہے!');
+        }
+
+        function adminUpdateBalance() {
+            const newBal = document.getElementById('admin-new-balance').value;
+            userBalance = parseFloat(newBal).toFixed(2);
+            document.getElementById('display-balance').innerText = `$${userBalance}`;
+            alert(`صارف کا بیلنس کامیابی سے اپڈیٹ کرکے $${userBalance} کر دیا گیا ہے!`);
+        }
+
+        function adminSendReward() {
+            const selectedReward = document.getElementById('admin-reward-select').value;
+            userReward = parseFloat(selectedReward).toFixed(2);
+            document.getElementById('user-reward-display').innerText = `$${userReward}`;
+            
+            userBalance = (parseFloat(userBalance) + parseFloat(selectedReward)).toFixed(2);
+            document.getElementById('display-balance').innerText = `$${userBalance}`;
+            
+            alert(`ایڈمن کی طرف سے $${selectedReward} کا ریوارڈ صارف کے اکاؤنٹ میں بھیج دیا گیا ہے!`);
+        }
+
+        function sendUserChat() {
+            const input = document.getElementById('user-chat-input');
+            const chatBox = document.getElementById('user-chat-box');
+            const adminChatDisplay = document.getElementById('admin-chat-display');
+            
+            if(input.value.trim() !== '') {
+                const msg = input.value;
+                chatBox.innerHTML += `<p><b>آپ:</b> ${msg}</p>`;
+                adminChatDisplay.innerHTML += `<p><b>یوزر:</b> ${msg}</p>`;
+                input.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function adminSendChat() {
+            const replyInput = document.getElementById('admin-chat-reply');
+            const chatBox = document.getElementById('user-chat-box');
+            const adminChatDisplay = document.getElementById('admin-chat-display');
+
+            if(replyInput.value.trim() !== '') {
+                const reply = replyInput.value;
+                adminChatDisplay.innerHTML += `<p><b>ایڈمن:</b> ${reply}</p>`;
+                chatBox.innerHTML += `<p><b>ایڈمن:</b> ${reply}</p>`;
+                replyInput.value = '';
+                adminChatDisplay.scrollTop = adminChatDisplay.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
