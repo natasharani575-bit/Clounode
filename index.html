@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudNode - Royal Premium Dashboard</title>
+    <style>
+        :root {
+            --royal-blue-gradient: linear-gradient(135deg, #0051ff 0%, #002699 50%, #00114d 100%);
+            --accent-cyan: #00f2fe;
+            --accent-pink: #ff007f;
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --text-main: #0b132b;
+            --text-muted: #475569;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border-radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+        }
+
+        body {
+            background: linear-gradient(135deg, #020617 0%, #091e3a 50%, #020617 100%);
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 25px 60px -10px rgba(0, 81, 255, 0.4);
+            overflow: hidden;
+            border: 2px solid rgba(0, 242, 254, 0.3);
+            backdrop-filter: blur(15px);
+        }
+
+        .section {
+            display: none;
+            padding: 22px;
+            animation: fadeIn 0.35s ease-in-out;
+            max-height: 88vh;
+            overflow-y: auto;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .banner {
+            background: var(--royal-blue-gradient);
+            color: #ffffff;
+            text-align: center;
+            padding: 24px;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            box-shadow: inset 0 -4px 10px rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--accent-cyan);
+        }
+
+        h2, h3 {
+            color: #002699;
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 13px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            font-size: 14px;
+            background: #f8fafc;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        input:focus, select:focus {
+            border-color: #0051ff;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 81, 255, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--royal-blue-gradient);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px rgba(0, 81, 255, 0.35);
+        }
+
+        .btn:hover {
+            opacity: 0.94;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0, 81, 255, 0.5);
+        }
+
+        .switch-text {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .switch-text span {
+            color: #0051ff;
+            text-decoration: underline;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid #818cf8;
+            margin-bottom: 16px;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-container {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 3px solid #0051ff;
+            overflow: hidden;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name h4 {
+            font-size: 16px;
+            color: #1e1b4b;
+        }
+
+        .profile-name p {
+            font-size: 11px;
+            color: #4338ca;
+            font-weight: 600;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: var(--royal-blue-gradient);
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0, 38, 153, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .balance-card p {
+            font-size: 13px;
+            color: #93c5fd;
+        }
+
+        .balance-card h3 {
+            font-size: 32px;
+            color: #ffffff;
+            margin-top: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Grid Menu */
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .menu-item {
+            background: #f0f4ff;
+            border: 2px solid #c7d2fe;
+            padding: 12px 6px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 11px;
+            color: #1e3a8a;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 10px rgba(0, 81, 255, 0.08);
+        }
+
+        .menu-item span.icon {
+            font-size: 24px;
+        }
+
+        .menu-item:hover {
+            border-color: #0051ff;
+            background: #dbeafe;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 81, 255, 0.2);
+        }
+
+        .box-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 14px;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            font-size: 13px;
+        }
+
+        /* Admin & Cards */
+        .admin-card {
+            background: #f0f4ff;
+            border: 2px solid #93c5fd;
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+
+        .screenshot-preview {
+            width: 100%;
+            max-height: 240px;
+            border: 2px dashed #0051ff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            color: var(--text-muted);
+            margin-top: 8px;
+            overflow: auto;
+            padding: 4px;
+        }
+
+        .screenshot-preview img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            cursor: zoom-in;
+        }
+
+        .badge-pending { background: var(--warning); color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .badge-approved { background: var(--success); color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .badge-rejected { background: var(--danger); color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; }
+
+        .chat-box {
+            height: 130px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 10px;
+            overflow-y: auto;
+            background: #ffffff;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .back-btn { background: #334155; }
+        .back-btn:hover { background: #1e293b; }
+
+        .btn-success { background: var(--success); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4); }
+        .btn-danger { background: var(--danger); box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Banner -->
+        <div class="banner">
+            <span>CloudNode</span> ⚡
+        </div>
+
+        <!-- 1. Registration Page -->
+        <div id="register-section" class="section active">
+            <h2>Create New Account</h2>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="reg-phone" placeholder="Enter your phone number">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="reg-email" placeholder="example@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="reg-pass" placeholder="Enter password">
+            </div>
+            <div class="form-group">
+                <label>Referral Code</label>
+                <input type="text" id="reg-ref" value="CN-99881" readonly>
+            </div>
+            <button class="btn" onclick="registerUser()">Register</button>
+            <div class="switch-text">
+                Already have an account? <span onclick="switchPage('login-section')">Login here</span>
+            </div>
+        </div>
+
+        <!-- 2. Login Page -->
+        <div id="login-section" class="section">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="login-email" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="login-pass" placeholder="Enter password">
+            </div>
+            <button class="btn" onclick="loginUser()">Login</button>
+            <div class="switch-text">
+                Don't have an account? <span onclick="switchPage('register-section')">Register here</span>
+            </div>
+        </div>
+
+        <!-- 3. User Home Dashboard -->
+        <div id="home-section" class="section">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="avatar-container" onclick="document.getElementById('profile-pic-input').click()" title="Change profile picture">
+                        <img id="user-avatar-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile">
+                    </div>
+                    <div class="profile-name">
+                        <h4 id="user-display-name">Najeeebkhan376</h4>
+                        <p>💎 Royal Member</p>
+                    </div>
+                </div>
+                <input type="file" id="profile-pic-input" accept="image/*" style="display: none;" onchange="updateProfilePic(event)">
+                <button onclick="switchPage('login-section')" style="background:none; border:none; color:var(--danger); font-size:20px; cursor:pointer;" title="Logout">🚪</button>
+            </div>
+
+            <div class="balance-card">
+                <p><b>Current Balance</b></p>
+                <h3 id="display-balance">$0.00</h3>
+            </div>
+
+            <div id="user-status-banner" style="background: #fef3c7; border: 1px solid #fde68a; padding: 10px; border-radius: 14px; text-align: center; margin-bottom: 14px; color: #92400e; font-weight: 700; font-size: 12px;">
+                ⚠️ Status: <span id="user-live-status-text">New Account (Investment Pending)</span>
+            </div>
+
+            <!-- Grid Menu -->
+            <div class="grid-menu">
+                <div class="menu-item" onclick="switchPage('investment-section')">
+                    <span class="icon">💳</span>
+                    <span>Investment</span>
+                </div>
+                <div class="menu-item" onclick="switchPage('plans-section')">
+                    <span class="icon">📊</span>
+                    <span>Plans List</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('withdraw-section')">
+                    <span class="icon">💸</span>
+                    <span>Withdraw</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('task-section')">
+                    <span class="icon">📋</span>
+                    <span>Tasks</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('levels-section')">
+                    <span class="icon">🏆</span>
+                    <span>Levels & Team</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('chat-section')">
+                    <span class="icon">💬</span>
+                    <span>Live Chat</span>
+                </div>
+            </div>
+
+            <div class="box-card">
+                <p><b>🔗 Your Referral Link:</b></p>
+                <input type="text" value="https://cloudnode.com/ref?id=CN-99881" readonly style="font-size: 11px; margin-top: 5px; padding: 8px;">
+            </div>
+        </div>
+
+        <!-- 4. Investment Section -->
+        <div id="investment-section" class="section">
+            <h2>Submit BEP-20 Investment</h2>
+            <div class="form-group">
+                <label>Admin BEP-20 Wallet Address</label>
+                <input type="text" value="0xCloudNodeBEP20AdminWalletAddress789..." readonly>
+            </div>
+            <div class="form-group">
+                <label>Select Plan</label>
+                <select id="inv-plan">
+                    <option value="5">$5 Investment (Return: $8)</option>
+                    <option value="15">$15 Investment (Return: $25)</option>
+                    <option value="30">$30 Investment (Return: $60)</option>
+                    <option value="50">$50 Investment (Return: $70)</option>
+                    <option value="100">$100 Investment (Return: $130)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Your BEP-20 Wallet Address</label>
+                <input type="text" id="user-bep20-input" placeholder="Starts with 0x">
+            </div>
+            <div class="form-group">
+                <label>Transaction ID (TxID)</label>
+                <input type="text" id="user-txid-input" placeholder="Enter TxID">
+            </div>
+            <div class="form-group">
+                <label>Upload Screenshot</label>
+                <input type="file" id="user-screenshot-input" accept="image/*" onchange="previewInvestmentImage(event)">
+            </div>
+            <button class="btn" onclick="submitInvestment()">Submit Investment</button>
+            
+            <!-- Investment History Section -->
+            <div class="box-card" id="user-investment-history-box" style="margin-top: 14px;">
+                <p><b>Investment History:</b> No active investment record.</p>
+            </div>
+
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 5. Plans List Section -->
+        <div id="plans-section" class="section">
+            <h2>All Investment Plans</h2>
+            <div class="box-card">
+                <p><b>✨ Plan 1:</b> $5 Investment ➔ Return: $8</p>
+                <p><b>✨ Plan 2:</b> $15 Investment ➔ Return: $25</p>
+                <p><b>✨ Plan 3:</b> $30 Investment ➔ Return: $60</p>
+                <p><b>✨ Plan 4:</b> $50 Investment ➔ Return: $70</p>
+                <p><b>✨ Plan 5:</b> $100 Investment ➔ Return: $130</p>
+            </div>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 6. Withdraw Section -->
+        <div id="withdraw-section" class="section">
+            <h2>Withdraw System</h2>
+            <div style="background: #e0e7ff; border: 1px solid #818cf8; padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 14px; color: #1e3a8a; font-weight: 700; font-size: 12px;">
+                ℹ️ Withdrawal will be received within 24 hours.
+            </div>
+            <div class="form-group">
+                <label>BEP-20 Withdraw Address</label>
+                <input type="text" id="user-withdraw-addr" placeholder="Starts with 0x">
+            </div>
+            <div class="form-group">
+                <label>Select Amount</label>
+                <select id="user-withdraw-amount" onchange="updateWithdrawFeeInfo()">
+                    <option value="8" data-fee="0.95">$8 Withdraw (Fee: $0.95)</option>
+                    <option value="25" data-fee="1.00">$25 Withdraw (Fee: $1.00)</option>
+                    <option value="60" data-fee="2.00">$60 Withdraw (Fee: $2.00)</option>
+                    <option value="70" data-fee="1.35">$70 Withdraw (Fee: $1.35)</option>
+                    <option value="100" data-fee="3.00">$100 Withdraw (Fee: $3.00)</option>
+                </select>
+            </div>
+            
+            <!-- Dynamic Fee & Net Calculation Info Box -->
+            <div id="withdraw-fee-display-box" style="background: #f8fafc; border: 2px solid #cbd5e1; padding: 10px 14px; border-radius: 12px; margin-bottom: 14px; font-size: 12px; font-weight: 700; color: #1e3a8a;">
+                <span>Selected Amount: $8.00</span> | <span>Fee: $0.95</span> | <span style="color: var(--success);">Net You Get: $7.05</span>
+            </div>
+
+            <button class="btn" onclick="submitWithdraw()">Submit Withdrawal Request</button>
+            <div class="box-card" id="user-withdraw-status-box" style="margin-top: 14px;">
+                <p><b>Withdraw History:</b> No active request found.</p>
+            </div>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 7. Task Section -->
+        <div id="task-section" class="section">
+            <h2>Daily Task (24 Hours)</h2>
+            <div class="box-card" style="text-align: center;">
+                <p><b>Today's Reward:</b> <span id="admin-set-task-reward" style="color: #0051ff; font-size: 18px; font-weight: 800;">$1.50</span></p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">New task can be claimed every 24 hours.</p>
+            </div>
+            <button class="btn" onclick="claimDailyTask()">Claim Task</button>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 8. Levels & Team Section -->
+        <div id="levels-section" class="section">
+            <h2>Levels & Team Record</h2>
+            <div class="box-card">
+                <p style="margin-bottom: 8px;"><b>🏆 Current Level:</b> Level 1 (Royal Member)</p>
+                <hr style="border:0; border-top:1px solid #cbd5e1; margin:8px 0;">
+                <p><b>👥 Direct Members (Tier 1):</b> 3 Members</p>
+                <p><b>🔗 Indirect Members (Tier 2):</b> 5 Members</p>
+                <p><b>💰 Total Team Commission:</b> $12.50</p>
+            </div>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 9. Live Chat Section -->
+        <div id="chat-section" class="section">
+            <h2>Live Chat (with Admin)</h2>
+            <div class="chat-box" id="user-chat-box">
+                <p><b>Admin:</b> Welcome! How can we help you today?</p>
+            </div>
+            <div class="form-group">
+                <input type="text" id="user-chat-input" placeholder="Type message...">
+            </div>
+            <button class="btn" onclick="sendUserChat()">Send Message</button>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 10. SECURE ADMIN PANEL -->
+        <div id="admin-section" class="section">
+            <h2 style="background: var(--royal-blue-gradient); color: #fff; padding: 12px; border-radius: 14px; font-size:18px;">⚙️ Royal Admin Control Panel</h2>
+            
+            <div class="admin-card">
+                <p style="font-weight: 800; color: #1e3a8a; margin-bottom: 6px;">🛠️ Global Daily Task Setting:</p>
+                <div class="form-group">
+                    <label style="font-size: 11px;">Daily Task Amount ($):</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="input-admin-task-amt" value="1.50" style="padding: 8px; font-size: 13px;">
+                        <button class="btn" style="margin:0; width: 100px; padding: 8px; font-size: 12px;" onclick="updateAdminTaskReward()">Set</button>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-weight: 800; margin-top: 14px; color: #1e3a8a; font-size:14px;">👥 User Investment Request:</p>
+            <div class="admin-card" id="admin-user-record-box">
+                <p><b>Email:</b> Najeeebkhan376@gmail.com</p>
+                <p><b>Status:</b> <span id="admin-user-status-badge" class="badge-pending">Pending</span></p>
+                <div id="admin-investment-details-view" style="margin-top: 6px;">
+                    <p>No investment available.</p>
+                </div>
+                
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>User Screenshot (Scrollable View):</label>
+                    <div class="screenshot-preview" id="admin-screenshot-container">
+                        No image
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                    <button class="btn btn-success" style="margin:0; padding:10px; font-size:13px;" onclick="adminApproveInvestment()">Approve</button>
+                    <button class="btn btn-danger" style="margin:0; padding:10px; font-size:13px;" onclick="adminRejectInvestment()">Reject</button>
+                </div>
+
+                <div class="form-group" style="margin-top: 14px;">
+                    <label style="font-size: 12px;">Set Balance:</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="admin-new-balance" value="0" style="padding: 8px; font-size: 13px;">
+                        <button class="btn" style="margin:0; width: 90px; padding: 8px; font-size: 12px;" onclick="adminUpdateBalance()">Update</button>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-weight: 800; margin-top: 14px; color: #1e3a8a; font-size:14px;">💸 Withdrawal Requests:</p>
+            <div class="admin-card" id="admin-withdraw-request-box">
+                <p>No withdrawal requests found.</p>
+            </div>
+
+            <p style="font-weight: 800; margin-top: 14px; color: #1e3a8a; font-size:14px;">💬 Live Chat:</p>
+            <div class="admin-card">
+                <div class="chat-box" id="admin-chat-display" style="height: 100px;">
+                    <p><b>User:</b> Hello Admin!</p>
+                </div>
+                <input type="text" id="admin-chat-reply" placeholder="Type reply..." style="font-size: 13px; margin-bottom: 8px; padding: 10px;">
+                <button class="btn" style="padding: 8px; font-size: 13px; margin-top: 0;" onclick="adminSendChat()">Send Reply</button>
+            </div>
+
+            <button class="btn" style="background: #1e293b; margin-top: 16px;" onclick="switchPage('login-section')">Logout</button>
+        </div>
+
+    </div>
+
+    <script>
+        let userBalance = 0.00;
+        let hasInvested = false;
+        let tempScreenshotSrc = "";
+        let dailyTaskRewardAmount = 1.50;
+
+        // Persistent State variables
+        let investmentState = {
+            submitted: false,
+            plan: "",
+            wallet: "",
+            txid: "",
+            status: "None" // Pending, Approved, Rejected
+        };
+
+        let withdrawState = {
+            submitted: false,
+            amount: "",
+            fee: "",
+            net: "",
+            address: "",
+            status: "None" // Pending, Approved, Rejected
+        };
+
+        function switchPage(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.add('active');
+            }
+        }
+
+        function updateProfilePic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('user-avatar-img').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function registerUser() {
+            alert('Account created successfully! Please login now.');
+            switchPage('login-section');
+        }
+
+        function loginUser() {
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if (email === 'natashaali476@gmail.com' && pass === 'natashaali5678') {
+                alert('Admin Login Successful!');
+                switchPage('admin-section');
+            } else if (email !== '' && pass !== '') {
+                alert('Login Successful!');
+                switchPage('home-section');
+            } else {
+                alert('Please enter correct credentials!');
+            }
+        }
+
+        function checkAccessAndOpen(sectionId) {
+            if (!hasInvested) {
+                alert('⚠️ Please complete your investment first!');
+                switchPage('investment-section');
+            } else {
+                switchPage(sectionId);
+            }
+        }
+
+        function previewInvestmentImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempScreenshotSrc = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function submitInvestment() {
+            const bep20Addr = document.getElementById('user-bep20-input').value.trim();
+            const txid = document.getElementById('user-txid-input').value.trim();
+            const plan = document.getElementById('inv-plan').value;
+            
+            if(bep20Addr === '' || !bep20Addr.startsWith('0x')) {
+                alert('⚠️ Please enter a valid BEP-20 wallet address!');
+                return;
+            }
+            if(txid === '') {
+                alert('Please enter TxID!');
+                return;
+            }
+
+            investmentState = {
+                submitted: true,
+                plan: plan,
+                wallet: bep20Addr,
+                txid: txid,
+                status: "Pending"
+            };
+
+            renderInvestmentHistory();
+            renderAdminInvestmentPanel();
+
+            document.getElementById('user-live-status-text').innerText = "Investment is pending, waiting for admin approval.";
+            alert('Investment submitted successfully!');
+            switchPage('home-section');
+        }
+
+        function renderInvestmentHistory() {
+            const historyBox = document.getElementById('user-investment-history-box');
+            if (!investmentState.submitted) {
+                historyBox.innerHTML = `<p><b>Investment History:</b> No active investment record.</p>`;
+                return;
+            }
+
+            if (investmentState.status === "Pending") {
+                historyBox.innerHTML = `
+                    <p><b>Plan:</b> $${investmentState.plan} | <span class="badge-pending">Pending</span></p>
+                    <p style="margin-top:4px; font-size:11px;"><b>TxID:</b> ${investmentState.txid}</p>
+                `;
+            } else if (investmentState.status === "Approved") {
+                historyBox.innerHTML = `
+                    <p><b>Plan:</b> $${investmentState.plan}</p>
+                    <p style="color: var(--success); font-weight: bold; margin-top: 4px;">✅ Investment Approved by Admin!</p>
+                `;
+            } else if (investmentState.status === "Rejected") {
+                historyBox.innerHTML = `
+                    <p><b>Plan:</b> $${investmentState.plan}</p>
+                    <p style="color: var(--danger); font-weight: bold; margin-top: 4px;">❌ Investment Rejected by Admin.</p>
+                `;
+            }
+        }
+
+        function renderAdminInvestmentPanel() {
+            if (!investmentState.submitted) return;
+
+            document.getElementById('admin-user-status-badge').className = investmentState.status === "Approved" ? "badge-approved" : (investmentState.status === "Rejected" ? "badge-rejected" : "badge-pending");
+            document.getElementById('admin-user-status-badge').innerText = investmentState.status;
+            
+            document.getElementById('admin-investment-details-view').innerHTML = `
+                <p><b>Plan:</b> $${investmentState.plan}</p>
+                <p><b>Wallet:</b> ${investmentState.wallet}</p>
+                <p><b>TxID:</b> ${investmentState.txid}</p>
+            `;
+
+            if(tempScreenshotSrc !== "") {
+                document.getElementById('admin-screenshot-container').innerHTML = `<img src="${tempScreenshotSrc}" alt="Screenshot">`;
+            }
+
+            if (withdrawState.submitted) {
+                renderAdminWithdrawPanel();
+            }
+        }
+
+        function adminApproveInvestment() {
+            if (!investmentState.submitted) {
+                alert('No investment request to approve.');
+                return;
+            }
+            hasInvested = true;
+            investmentState.status = "Approved";
+
+            document.getElementById('admin-user-status-badge').className = "badge-approved";
+            document.getElementById('admin-user-status-badge').innerText = "Approved";
+            
+            renderInvestmentHistory();
+
+            document.getElementById('user-live-status-text').innerText = "Account Active and Investment Approved!";
+            document.getElementById('user-status-banner').style.background = "#d1fae5";
+            document.getElementById('user-status-banner').style.color = "#065f46";
+            alert('Investment approved successfully!');
+        }
+
+        function adminRejectInvestment() {
+            if (!investmentState.submitted) {
+                alert('No investment request to reject.');
+                return;
+            }
+            hasInvested = false;
+            investmentState.status = "Rejected";
+
+            document.getElementById('admin-user-status-badge').className = "badge-rejected";
+            document.getElementById('admin-user-status-badge').innerText = "Rejected";
+            
+            renderInvestmentHistory();
+
+            document.getElementById('user-live-status-text').innerText = "Investment has been rejected.";
+            document.getElementById('user-status-banner').style.background = "#fee2e2";
+            document.getElementById('user-status-banner').style.color = "#991b1b";
+            alert('Investment rejected!');
+        }
+
+        function updateWithdrawFeeInfo() {
+            const selectElem = document.getElementById('user-withdraw-amount');
+            const selectedOpt = selectElem.options[selectElem.selectedIndex];
+            const amt = parseFloat(selectedOpt.value);
+            const fee = parseFloat(selectedOpt.getAttribute('data-fee'));
+            const net = (amt - fee).toFixed(2);
+
+            document.getElementById('withdraw-fee-display-box').innerHTML = `
+                <span>Selected Amount: $${amt.toFixed(2)}</span> | <span>Fee: $${fee.toFixed(2)}</span> | <span style="color: var(--success);">Net You Get: $${net}</span>
+            `;
+        }
+
+        function submitWithdraw() {
+            const addr = document.getElementById('user-withdraw-addr').value.trim();
+            const selectElem = document.getElementById('user-withdraw-amount');
+            const selectedOpt = selectElem.options[selectElem.selectedIndex];
+            const amt = selectedOpt.value;
+            const fee = selectedOpt.getAttribute('data-fee');
+            const net = (amt - fee).toFixed(2);
+            
+            if(addr === '' || !addr.startsWith('0x')) {
+                alert('⚠️ Please enter a valid BEP-20 withdrawal address!');
+                return;
+            }
+            
+            withdrawState = {
+                submitted: true,
+                amount: amt,
+                fee: fee,
+                net: net,
+                address: addr,
+                status: "Pending"
+            };
+
+            renderWithdrawHistory();
+            renderAdminWithdrawPanel();
+
+            alert('Withdrawal request sent to admin!');
+            switchPage('home-section');
+        }
+
+        function renderWithdrawHistory() {
+            const statusBox = document.getElementById('user-withdraw-status-box');
+            if (!withdrawState.submitted) {
+                statusBox.innerHTML = `<p><b>Withdraw History:</b> No active request found.</p>`;
+                return;
+            }
+
+            if (withdrawState.status === "Pending") {
+                statusBox.innerHTML = `
+                    <p><b>Requested:</b> $${withdrawState.amount} (Fee: $${withdrawState.fee}) | <span class="badge-pending">Pending</span></p>
+                    <p style="margin-top:4px; color: var(--success); font-weight:bold;"><b>Net You Get:</b> $${withdrawState.net}</p>
+                    <p style="margin-top:4px; font-size:11px;"><b>Address:</b> ${withdrawState.address}</p>
+                `;
+            } else if (withdrawState.status === "Approved") {
+                statusBox.innerHTML = `
+                    <p><b>Requested:</b> $${withdrawState.amount} | <span class="badge-approved">Approved</span></p>
+                    <p style="color: var(--success); font-weight: bold; margin-top: 4px;">✅ Your withdrawal has been approved!</p>
+                `;
+            } else if (withdrawState.status === "Rejected") {
+                statusBox.innerHTML = `
+                    <p><b>Requested:</b> $${withdrawState.amount} | <span class="badge-rejected">Rejected</span></p>
+                    <p style="color: var(--danger); font-weight: bold; margin-top: 4px;">❌ Your withdrawal has been rejected by admin.</p>
+                `;
+            }
+        }
+
+        function renderAdminWithdrawPanel() {
+            const adminBox = document.getElementById('admin-withdraw-request-box');
+            if (!withdrawState.submitted) {
+                adminBox.innerHTML = `<p>No withdrawal requests found.</p>`;
+                return;
+            }
+
+            if (withdrawState.status === "Pending") {
+                adminBox.innerHTML = `
+                    <p><b>Requested:</b> $${withdrawState.amount} | <b>Fee:</b> $${withdrawState.fee} | <span class="badge-pending">Pending</span></p>
+                    <p style="color: var(--success);"><b>Net Payout:</b> $${withdrawState.net}</p>
+                    <p><b>Address:</b> ${withdrawState.address}</p>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button class="btn btn-success" style="padding: 8px; font-size: 12px; margin:0;" onclick="approveWithdraw()">Approve</button>
+                        <button class="btn btn-danger" style="padding: 8px; font-size: 12px; margin:0;" onclick="rejectWithdraw()">Reject</button>
+                    </div>
+                `;
+            } else if (withdrawState.status === "Approved") {
+                adminBox.innerHTML = `<p style="color: var(--success); font-weight: bold;">✅ Withdrawal Approved!</p>`;
+            } else if (withdrawState.status === "Rejected") {
+                adminBox.innerHTML = `<p style="color: var(--danger); font-weight: bold;">❌ Withdrawal Rejected.</p>`;
+            }
+        }
+
+        function approveWithdraw() {
+            withdrawState.status = "Approved";
+            renderWithdrawHistory();
+            renderAdminWithdrawPanel();
+            alert('Withdrawal approved!');
+        }
+
+        function rejectWithdraw() {
+            withdrawState.status = "Rejected";
+            renderWithdrawHistory();
+            renderAdminWithdrawPanel();
+            alert('Withdrawal rejected!');
+        }
+
+        function updateAdminTaskReward() {
+            const val = document.getElementById('input-admin-task-amt').value;
+            dailyTaskRewardAmount = parseFloat(val).toFixed(2);
+            document.getElementById('admin-set-task-reward').innerText = `$${dailyTaskRewardAmount}`;
+            alert(`Daily task reward is now set to $${dailyTaskRewardAmount}!`);
+        }
+
+        function claimDailyTask() {
+            userBalance = (parseFloat(userBalance) + parseFloat(dailyTaskRewardAmount)).toFixed(2);
+            document.getElementById('display-balance').innerText = `$${userBalance}`;
+            alert(`Congratulations! $${dailyTaskRewardAmount} task claimed successfully.`);
+            switchPage('home-section');
+        }
+
+        function adminUpdateBalance() {
+            const newBal = document.getElementById('admin-new-balance').value;
+            userBalance = parseFloat(newBal).toFixed(2);
+            document.getElementById('display-balance').innerText = `$${userBalance}`;
+            alert(`Balance updated to $${userBalance}!`);
+        }
+
+        function sendUserChat() {
+            const input = document.getElementById('user-chat-input');
+            const chatBox = document.getElementById('user-chat-box');
+            const adminChatDisplay = document.getElementById('admin-chat-display');
+            if(input.value.trim() !== '') {
+                chatBox.innerHTML += `<p><b>You:</b> ${input.value}</p>`;
+                adminChatDisplay.innerHTML += `<p><b>User:</b> ${input.value}</p>`;
+                input.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function adminSendChat() {
+            const replyInput = document.getElementById('admin-chat-reply');
+            const chatBox = document.getElementById('user-chat-box');
+            const adminChatDisplay = document.getElementById('admin-chat-display');
+            if(replyInput.value.stream !== '') {
+                adminChatDisplay.innerHTML += `<p><b>Admin:</b> ${replyInput.value}</p>`;
+                chatBox.innerHTML += `<p><b>Admin:</b> ${replyInput.value}</p>`;
+                replyInput.value = '';
+                adminChatDisplay.scrollTop = adminChatDisplay.scrollHeight;
+            }
+        }
+
+        // Initialize fee info on load
+        window.onload = function() {
+            updateWithdrawFeeInfo();
+        };
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudNode - Royal Premium Dashboard</title>
+    <style>
+        :root {
+            --royal-blue-gradient: linear-gradient(135deg, #0051ff 0%, #002699 50%, #00114d 100%);
+            --accent-cyan: #00f2fe;
+            --accent-pink: #ff007f;
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --text-main: #0b132b;
+            --text-muted: #475569;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border-radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+        }
+
+        body {
+            background: linear-gradient(135deg, #020617 0%, #091e3a 50%, #020617 100%);
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 25px 60px -10px rgba(0, 81, 255, 0.4);
+            overflow: hidden;
+            border: 2px solid rgba(0, 242, 254, 0.3);
+            backdrop-filter: blur(15px);
+        }
+
+        .section {
+            display: none;
+            padding: 22px;
+            animation: fadeIn 0.35s ease-in-out;
+            max-height: 88vh;
+            overflow-y: auto;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .banner {
+            background: var(--royal-blue-gradient);
+            color: #ffffff;
+            text-align: center;
+            padding: 24px;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            box-shadow: inset 0 -4px 10px rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--accent-cyan);
+        }
+
+        h2, h3 {
+            color: #002699;
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 13px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            font-size: 14px;
+            background: #f8fafc;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        input:focus, select:focus {
+            border-color: #0051ff;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 81, 255, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--royal-blue-gradient);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px rgba(0, 81, 255, 0.35);
+        }
+
+        .btn:hover {
+            opacity: 0.94;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0, 81, 255, 0.5);
+        }
+
+        .switch-text {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .switch-text span {
+            color: #0051ff;
+            text-decoration: underline;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid #818cf8;
+            margin-bottom: 16px;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-container {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 3px solid #0051ff;
+            overflow: hidden;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name h4 {
+            font-size: 16px;
+            color: #1e1b4b;
+        }
+
+        .profile-name p {
+            font-size: 11px;
+            color: #4338ca;
+            font-weight: 600;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: var(--royal-blue-gradient);
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0, 38, 153, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .balance-card p {
+            font-size: 13px;
+            color: #93c5fd;
+        }
+
+        .balance-card h3 {
+            font-size: 32px;
+            color: #ffffff;
+            margin-top: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Grid Menu */
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .menu-item {
+            background: #f0f4ff;
+            border: 2px solid #c7d2fe;
+            padding: 12px 6px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 11px;
+            color: #1e3a8a;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 10px rgba(0, 81, 255, 0.08);
+        }
+
+        .menu-item span.icon {
+            font-size: 24px;
+        }
+
+        .menu-item:hover {
+            border-color: #0051ff;
+            background: #dbeafe;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 81, 255, 0.2);
+        }
+
+        .box-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 14px;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            font-size: 13px;
+        }
+
+        /* Admin & Cards */
+        .admin-card {
+            background: #f0f4ff;
+            border: 2px solid #93c5fd;
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+
+        .screenshot-preview {
+            width: 100%;
+            max-height: 240px;
+            border: 2px dashed #0051ff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            color: var(--text-muted);
+            margin-top: 8px;
+            overflow: auto;
+            padding: 4px;
+        }
+
+        .screenshot-preview img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            cursor: zoom-in;
+        }
+
+        .badge-pending { background: var(--warning); color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .badge-approved { background: var(--success); color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .badge-rejected { background: var(--danger); color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; }
+
+        .chat-box {
+            height: 130px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 10px;
+            overflow-y: auto;
+            background: #ffffff;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .back-btn { background: #334155; }
+        .back-btn:hover { background: #1e293b; }
+
+        .btn-success { background: var(--success); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4); }
+        .btn-danger { background: var(--danger); box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Banner -->
+        <div class="banner">
+            <span>CloudNode</span> ⚡
+        </div>
+
+        <!-- 1. Registration Page -->
+        <div id="register-section" class="section active">
+            <h2>Create New Account</h2>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="reg-phone" placeholder="Enter your phone number">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="reg-email" placeholder="example@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="reg-pass" placeholder="Enter password">
+            </div>
+            <div class="form-group">
+                <label>Referral Code</label>
+                <input type="text" id="reg-ref" value="CN-99881" readonly>
+            </div>
+            <button class="btn" onclick="registerUser()">Register</button>
+            <div class="switch-text">
+                Already have an account? <span onclick="switchPage('login-section')">Login here</span>
+            </div>
+        </div>
+
+        <!-- 2. Login Page -->
+        <div id="login-section" class="section">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="login-email" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="login-pass" placeholder="Enter password">
+            </div>
+            <button class="btn" onclick="loginUser()">Login</button>
+            <div class="switch-text">
+                Don't have an account? <span onclick="switchPage('register-section')">Register here</span>
+            </div>
+        </div>
+
+        <!-- 3. User Home Dashboard -->
+        <div id="home-section" class="section">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="avatar-container" onclick="document.getElementById('profile-pic-input').click()" title="Change profile picture">
+                        <img id="user-avatar-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile">
+                    </div>
+                    <div class="profile-name">
+                        <h4 id="user-display-name">Najeeebkhan376</h4>
+                        <p>💎 Royal Member</p>
+                    </div>
+                </div>
+                <input type="file" id="profile-pic-input" accept="image/*" style="display: none;" onchange="updateProfilePic(event)">
+                <button onclick="switchPage('login-section')" style="background:none; border:none; color:var(--danger); font-size:20px; cursor:pointer;" title="Logout">🚪</button>
+            </div>
+
+            <div class="balance-card">
+                <p><b>Current Balance</b></p>
+                <h3 id="display-balance">$0.00</h3>
+            </div>
+
+            <div id="user-status-banner" style="background: #fef3c7; border: 1px solid #fde68a; padding: 10px; border-radius: 14px; text-align: center; margin-bottom: 14px; color: #92400e; font-weight: 700; font-size: 12px;">
+                ⚠️ Status: <span id="user-live-status-text">New Account (Investment Pending)</span>
+            </div>
+
+            <!-- Grid Menu -->
+            <div class="grid-menu">
+                <div class="menu-item" onclick="switchPage('investment-section')">
+                    <span class="icon">💳</span>
+                    <span>Investment</span>
+                </div>
+                <div class="menu-item" onclick="switchPage('plans-section')">
+                    <span class="icon">📊</span>
+                    <span>Plans List</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('withdraw-section')">
+                    <span class="icon">💸</span>
+                    <span>Withdraw</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('task-section')">
+                    <span class="icon">📋</span>
+                    <span>Tasks</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('levels-section')">
+                    <span class="icon">🏆</span>
+                    <span>Levels & Team</span>
+                </div>
+                <div class="menu-item" onclick="checkAccessAndOpen('chat-section')">
+                    <span class="icon">💬</span>
+                    <span>Live Chat</span>
+                </div>
+            </div>
+
+            <div class="box-card">
+                <p><b>🔗 Your Referral Link:</b></p>
+                <input type="text" value="https://cloudnode.com/ref?id=CN-99881" readonly style="font-size: 11px; margin-top: 5px; padding: 8px;">
+            </div>
+        </div>
+
+        <!-- 4. Investment Section -->
+        <div id="investment-section" class="section">
+            <h2>Submit BEP-20 Investment</h2>
+            <div class="form-group">
+                <label>Admin BEP-20 Wallet Address</label>
+                <input type="text" value="0xCloudNodeBEP20AdminWalletAddress789..." readonly>
+            </div>
+            <div class="form-group">
+                <label>Select Plan</label>
+                <select id="inv-plan">
+                    <option value="5">$5 Investment (Return: $8)</option>
+                    <option value="15">$15 Investment (Return: $25)</option>
+                    <option value="30">$30 Investment (Return: $60)</option>
+                    <option value="50">$50 Investment (Return: $70)</option>
+                    <option value="100">$100 Investment (Return: $130)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Your BEP-20 Wallet Address</label>
+                <input type="text" id="user-bep20-input" placeholder="Starts with 0x">
+            </div>
+            <div class="form-group">
+                <label>Transaction ID (TxID)</label>
+                <input type="text" id="user-txid-input" placeholder="Enter TxID">
+            </div>
+            <div class="form-group">
+                <label>Upload Screenshot</label>
+                <input type="file" id="user-screenshot-input" accept="image/*" onchange="previewInvestmentImage(event)">
+            </div>
+            <button class="btn" onclick="submitInvestment()">Submit Investment</button>
+            
+            <!-- Investment History Section -->
+            <div class="box-card" id="user-investment-history-box" style="margin-top: 14px;">
+                <p><b>Investment History:</b> No active investment record.</p>
+            </div>
+
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 5. Plans List Section -->
+        <div id="plans-section" class="section">
+            <h2>All Investment Plans</h2>
+            <div class="box-card">
+                <p><b>✨ Plan 1:</b> $5 Investment ➔ Return: $8</p>
+                <p><b>✨ Plan 2:</b> $15 Investment ➔ Return: $25</p>
+                <p><b>✨ Plan 3:</b> $30 Investment ➔ Return: $60</p>
+                <p><b>✨ Plan 4:</b> $50 Investment ➔ Return: $70</p>
+                <p><b>✨ Plan 5:</b> $100 Investment ➔ Return: $130</p>
+            </div>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 6. Withdraw Section -->
+        <div id="withdraw-section" class="section">
+            <h2>Withdraw System</h2>
+            <div style="background: #e0e7ff; border: 1px solid #818cf8; padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 14px; color: #1e3a8a; font-weight: 700; font-size: 12px;">
+                ℹ️ Withdrawal will be received within 24 hours.
+            </div>
+            <div class="form-group">
+                <label>BEP-20 Withdraw Address</label>
+                <input type="text" id="user-withdraw-addr" placeholder="Starts with 0x">
+            </div>
+            <div class="form-group">
+                <label>Select Amount</label>
+                <select id="user-withdraw-amount" onchange="updateWithdrawFeeInfo()">
+                    <option value="8" data-fee="0.95">$8 Withdraw (Fee: $0.95)</option>
+                    <option value="25" data-fee="1.00">$25 Withdraw (Fee: $1.00)</option>
+                    <option value="60" data-fee="2.00">$60 Withdraw (Fee: $2.00)</option>
+                    <option value="70" data-fee="1.35">$70 Withdraw (Fee: $1.35)</option>
+                    <option value="100" data-fee="3.00">$100 Withdraw (Fee: $3.00)</option>
+                </select>
+            </div>
+            
+            <!-- Dynamic Fee & Net Calculation Info Box -->
+            <div id="withdraw-fee-display-box" style="background: #f8fafc; border: 2px solid #cbd5e1; padding: 10px 14px; border-radius: 12px; margin-bottom: 14px; font-size: 12px; font-weight: 700; color: #1e3a8a;">
+                <span>Selected Amount: $8.00</span> | <span>Fee: $0.95</span> | <span style="color: var(--success);">Net You Get: $7.05</span>
+            </div>
+
+            <button class="btn" onclick="submitWithdraw()">Submit Withdrawal Request</button>
+            <div class="box-card" id="user-withdraw-status-box" style="margin-top: 14px;">
+                <p><b>Withdraw History:</b> No active request found.</p>
+            </div>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 7. Task Section -->
+        <div id="task-section" class="section">
+            <h2>Daily Task (24 Hours)</h2>
+            <div class="box-card" style="text-align: center;">
+                <p><b>Today's Reward:</b> <span id="admin-set-task-reward" style="color: #0051ff; font-size: 18px; font-weight: 800;">$1.50</span></p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">New task can be claimed every 24 hours.</p>
+            </div>
+            <button class="btn" onclick="claimDailyTask()">Claim Task</button>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 8. Levels & Team Section -->
+        <div id="levels-section" class="section">
+            <h2>Levels & Team Record</h2>
+            <div class="box-card">
+                <p style="margin-bottom: 8px;"><b>🏆 Current Level:</b> Level 1 (Royal Member)</p>
+                <hr style="border:0; border-top:1px solid #cbd5e1; margin:8px 0;">
+                <p><b>👥 Direct Members (Tier 1):</b> 3 Members</p>
+                <p><b>🔗 Indirect Members (Tier 2):</b> 5 Members</p>
+                <p><b>💰 Total Team Commission:</b> $12.50</p>
+            </div>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 9. Live Chat Section -->
+        <div id="chat-section" class="section">
+            <h2>Live Chat (with Admin)</h2>
+            <div class="chat-box" id="user-chat-box">
+                <p><b>Admin:</b> Welcome! How can we help you today?</p>
+            </div>
+            <div class="form-group">
+                <input type="text" id="user-chat-input" placeholder="Type message...">
+            </div>
+            <button class="btn" onclick="sendUserChat()">Send Message</button>
+            <button class="btn back-btn" onclick="switchPage('home-section')">Back</button>
+        </div>
+
+        <!-- 10. SECURE ADMIN PANEL -->
+        <div id="admin-section" class="section">
+            <h2 style="background: var(--royal-blue-gradient); color: #fff; padding: 12px; border-radius: 14px; font-size:18px;">⚙️ Royal Admin Control Panel</h2>
+            
+            <div class="admin-card">
+                <p style="font-weight: 800; color: #1e3a8a; margin-bottom: 6px;">🛠️ Global Daily Task Setting:</p>
+                <div class="form-group">
+                    <label style="font-size: 11px;">Daily Task Amount ($):</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="input-admin-task-amt" value="1.50" style="padding: 8px; font-size: 13px;">
+                        <button class="btn" style="margin:0; width: 100px; padding: 8px; font-size: 12px;" onclick="updateAdminTaskReward()">Set</button>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-weight: 800; margin-top: 14px; color: #1e3a8a; font-size:14px;">👥 User Investment Request:</p>
+            <div class="admin-card" id="admin-user-record-box">
+                <p><b>Email:</b> Najeeebkhan376@gmail.com</p>
+                <p><b>Status:</b> <span id="admin-user-status-badge" class="badge-pending">Pending</span></p>
+                <div id="admin-investment-details-view" style="margin-top: 6px;">
+                    <p>No investment available.</p>
+                </div>
+                
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>User Screenshot (Scrollable View):</label>
+                    <div class="screenshot-preview" id="admin-screenshot-container">
+                        No image
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                    <button class="btn btn-success" style="margin:0; padding:10px; font-size:13px;" onclick="adminApproveInvestment()">Approve</button>
+                    <button class="btn btn-danger" style="margin:0; padding:10px; font-size:13px;" onclick="adminRejectInvestment()">Reject</button>
+                </div>
+
+                <div class="form-group" style="margin-top: 14px;">
+                    <label style="font-size: 12px;">Set Balance:</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="admin-new-balance" value="0" style="padding: 8px; font-size: 13px;">
+                        <button class="btn" style="margin:0; width: 90px; padding: 8px; font-size: 12px;" onclick="adminUpdateBalance()">Update</button>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-weight: 800; margin-top: 14px; color: #1e3a8a; font-size:14px;">💸 Withdrawal Requests:</p>
+            <div class="admin-card" id="admin-withdraw-request-box">
+                <p>No withdrawal requests found.</p>
+            </div>
+
+            <p style="font-weight: 800; margin-top: 14px; color: #1e3a8a; font-size:14px;">💬 Live Chat:</p>
+            <div class="admin-card">
+                <div class="chat-box" id="admin-chat-display" style="height: 100px;">
+                    <p><b>User:</b> Hello Admin!</p>
+                </div>
+                <input type="text" id="admin-chat-reply" placeholder="Type reply..." style="font-size: 13px; margin-bottom: 8px; padding: 10px;">
+                <button class="btn" style="padding: 8px; font-size: 13px; margin-top: 0;" onclick="adminSendChat()">Send Reply</button>
+            </div>
+
+            <button class="btn" style="background: #1e293b; margin-top: 16px;" onclick="switchPage('login-section')">Logout</button>
+        </div>
+
+    </div>
+
+    <script>
+        let userBalance = 0.00;
+        let hasInvested = false;
+        let tempScreenshotSrc = "";
+        let dailyTaskRewardAmount = 1.50;
+
+        // Persistent State variables
+        let investmentState = {
+            submitted: false,
+            plan: "",
+            wallet: "",
+            txid: "",
+            status: "None" // Pending, Approved, Rejected
+        };
+
+        let withdrawState = {
+            submitted: false,
+            amount: "",
+            fee: "",
+            net: "",
+            address: "",
+            status: "None" // Pending, Approved, Rejected
+        };
+
+        function switchPage(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.add('active');
+            }
+        }
+
+        function updateProfilePic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('user-avatar-img').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function registerUser() {
+            alert('Account created successfully! Please login now.');
+            switchPage('login-section');
+        }
+
+        function loginUser() {
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if (email === 'natashaali476@gmail.com' && pass === 'natashaali5678') {
+                alert('Admin Login Successful!');
+                switchPage('admin-section');
+            } else if (email !== '' && pass !== '') {
+                alert('Login Successful!');
+                switchPage('home-section');
+            } else {
+                alert('Please enter correct credentials!');
+            }
+        }
+
+        function checkAccessAndOpen(sectionId) {
+            if (!hasInvested) {
+                alert('⚠️ Please complete your investment first!');
+                switchPage('investment-section');
+            } else {
+                switchPage(sectionId);
+            }
+        }
+
+        function previewInvestmentImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempScreenshotSrc = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function submitInvestment() {
+            const bep20Addr = document.getElementById('user-bep20-input').value.trim();
+            const txid = document.getElementById('user-txid-input').value.trim();
+            const plan = document.getElementById('inv-plan').value;
+            
+            if(bep20Addr === '' || !bep20Addr.startsWith('0x')) {
+                alert('⚠️ Please enter a valid BEP-20 wallet address!');
+                return;
+            }
+            if(txid === '') {
+                alert('Please enter TxID!');
+                return;
+            }
+
+            investmentState = {
+                submitted: true,
+                plan: plan,
+                wallet: bep20Addr,
+                txid: txid,
+                status: "Pending"
+            };
+
+            renderInvestmentHistory();
+            renderAdminInvestmentPanel();
+
+            document.getElementById('user-live-status-text').innerText = "Investment is pending, waiting for admin approval.";
+            alert('Investment submitted successfully!');
+            switchPage('home-section');
+        }
+
+        function renderInvestmentHistory() {
+            const historyBox = document.getElementById('user-investment-history-box');
+            if (!investmentState.submitted) {
+                historyBox.innerHTML = `<p><b>Investment History:</b> No active investment record.</p>`;
+                return;
+            }
+
+            if (investmentState.status === "Pending") {
+                historyBox.innerHTML = `
+                    <p><b>Plan:</b> $${investmentState.plan} | <span class="badge-pending">Pending</span></p>
+                    <p style="margin-top:4px; font-size:11px;"><b>TxID:</b> ${investmentState.txid}</p>
+                `;
+            } else if (investmentState.status === "Approved") {
+                historyBox.innerHTML = `
+                    <p><b>Plan:</b> $${investmentState.plan}</p>
+                    <p style="color: var(--success); font-weight: bold; margin-top: 4px;">✅ Investment Approved by Admin!</p>
+                `;
+            } else if (investmentState.status === "Rejected") {
+                historyBox.innerHTML = `
+                    <p><b>Plan:</b> $${investmentState.plan}</p>
+                    <p style="color: var(--danger); font-weight: bold; margin-top: 4px;">❌ Investment Rejected by Admin.</p>
+                `;
+            }
+        }
+
+        function renderAdminInvestmentPanel() {
+            if (!investmentState.submitted) return;
+
+            document.getElementById('admin-user-status-badge').className = investmentState.status === "Approved" ? "badge-approved" : (investmentState.status === "Rejected" ? "badge-rejected" : "badge-pending");
+            document.getElementById('admin-user-status-badge').innerText = investmentState.status;
+            
+            document.getElementById('admin-investment-details-view').innerHTML = `
+                <p><b>Plan:</b> $${investmentState.plan}</p>
+                <p><b>Wallet:</b> ${investmentState.wallet}</p>
+                <p><b>TxID:</b> ${investmentState.txid}</p>
+            `;
+
+            if(tempScreenshotSrc !== "") {
+                document.getElementById('admin-screenshot-container').innerHTML = `<img src="${tempScreenshotSrc}" alt="Screenshot">`;
+            }
+
+            if (withdrawState.submitted) {
+                renderAdminWithdrawPanel();
+            }
+        }
+
+        function adminApproveInvestment() {
+            if (!investmentState.submitted) {
+                alert('No investment request to approve.');
+                return;
+            }
+            hasInvested = true;
+            investmentState.status = "Approved";
+
+            document.getElementById('admin-user-status-badge').className = "badge-approved";
+            document.getElementById('admin-user-status-badge').innerText = "Approved";
+            
+            renderInvestmentHistory();
+
+            document.getElementById('user-live-status-text').innerText = "Account Active and Investment Approved!";
+            document.getElementById('user-status-banner').style.background = "#d1fae5";
+            document.getElementById('user-status-banner').style.color = "#065f46";
+            alert('Investment approved successfully!');
+        }
+
+        function adminRejectInvestment() {
+            if (!investmentState.submitted) {
+                alert('No investment request to reject.');
+                return;
+            }
+            hasInvested = false;
+            investmentState.status = "Rejected";
+
+            document.getElementById('admin-user-status-badge').className = "badge-rejected";
+            document.getElementById('admin-user-status-badge').innerText = "Rejected";
+            
+            renderInvestmentHistory();
+
+            document.getElementById('user-live-status-text').innerText = "Investment has been rejected.";
+            document.getElementById('user-status-banner').style.background = "#fee2e2";
+            document.getElementById('user-status-banner').style.color = "#991b1b";
+            alert('Investment rejected!');
+        }
+
+        function updateWithdrawFeeInfo() {
+            const selectElem = document.getElementById('user-withdraw-amount');
+            const selectedOpt = selectElem.options[selectElem.selectedIndex];
+            const amt = parseFloat(selectedOpt.value);
+            const fee = parseFloat(selectedOpt.getAttribute('data-fee'));
+            const net = (amt - fee).toFixed(2);
+
+            document.getElementById('withdraw-fee-display-box').innerHTML = `
+                <span>Selected Amount: $${amt.toFixed(2)}</span> | <span>Fee: $${fee.toFixed(2)}</span> | <span style="color: var(--success);">Net You Get: $${net}</span>
+            `;
+        }
+
+        function submitWithdraw() {
+            const addr = document.getElementById('user-withdraw-addr').value.trim();
+            const selectElem = document.getElementById('user-withdraw-amount');
+            const selectedOpt = selectElem.options[selectElem.selectedIndex];
+            const amt = selectedOpt.value;
+            const fee = selectedOpt.getAttribute('data-fee');
+            const net = (amt - fee).toFixed(2);
+            
+            if(addr === '' || !addr.startsWith('0x')) {
+                alert('⚠️ Please enter a valid BEP-20 withdrawal address!');
+                return;
+            }
+            
+            withdrawState = {
+                submitted: true,
+                amount: amt,
+                fee: fee,
+                net: net,
+                address: addr,
+                status: "Pending"
+            };
+
+            renderWithdrawHistory();
+            renderAdminWithdrawPanel();
+
+            alert('Withdrawal request sent to admin!');
+            switchPage('home-section');
+        }
+
+        function renderWithdrawHistory() {
+            const statusBox = document.getElementById('user-withdraw-status-box');
+            if (!withdrawState.submitted) {
+                statusBox.innerHTML = `<p><b>Withdraw History:</b> No active request found.</p>`;
+                return;
+            }
+
+            if (withdrawState.status === "Pending") {
+                statusBox.innerHTML = `
+                    <p><b>Requested:</b> $${withdrawState.amount} (Fee: $${withdrawState.fee}) | <span class="badge-pending">Pending</span></p>
+                    <p style="margin-top:4px; color: var(--success); font-weight:bold;"><b>Net You Get:</b> $${withdrawState.net}</p>
+                    <p style="margin-top:4px; font-size:11px;"><b>Address:</b> ${withdrawState.address}</p>
+                `;
+            } else if (withdrawState.status === "Approved") {
+                statusBox.innerHTML = `
+                    <p><b>Requested:</b> $${withdrawState.amount} | <span class="badge-approved">Approved</span></p>
+                    <p style="color: var(--success); font-weight: bold; margin-top: 4px;">✅ Your withdrawal has been approved!</p>
+                `;
+            } else if (withdrawState.status === "Rejected") {
+                statusBox.innerHTML = `
+                    <p><b>Requested:</b> $${withdrawState.amount} | <span class="badge-rejected">Rejected</span></p>
+                    <p style="color: var(--danger); font-weight: bold; margin-top: 4px;">❌ Your withdrawal has been rejected by admin.</p>
+                `;
+            }
+        }
+
+        function renderAdminWithdrawPanel() {
+            const adminBox = document.getElementById('admin-withdraw-request-box');
+            if (!withdrawState.submitted) {
+                adminBox.innerHTML = `<p>No withdrawal requests found.</p>`;
+                return;
+            }
+
+            if (withdrawState.status === "Pending") {
+                adminBox.innerHTML = `
+                    <p><b>Requested:</b> $${withdrawState.amount} | <b>Fee:</b> $${withdrawState.fee} | <span class="badge-pending">Pending</span></p>
+                    <p style="color: var(--success);"><b>Net Payout:</b> $${withdrawState.net}</p>
+                    <p><b>Address:</b> ${withdrawState.address}</p>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button class="btn btn-success" style="padding: 8px; font-size: 12px; margin:0;" onclick="approveWithdraw()">Approve</button>
+                        <button class="btn btn-danger" style="padding: 8px; font-size: 12px; margin:0;" onclick="rejectWithdraw()">Reject</button>
+                    </div>
+                `;
+            } else if (withdrawState.status === "Approved") {
+                adminBox.innerHTML = `<p style="color: var(--success); font-weight: bold;">✅ Withdrawal Approved!</p>`;
+            } else if (withdrawState.status === "Rejected") {
+                adminBox.innerHTML = `<p style="color: var(--danger); font-weight: bold;">❌ Withdrawal Rejected.</p>`;
+            }
+        }
+
+        function approveWithdraw() {
+            withdrawState.status = "Approved";
+            renderWithdrawHistory();
+            renderAdminWithdrawPanel();
+            alert('Withdrawal approved!');
+        }
+
+        function rejectWithdraw() {
+            withdrawState.status = "Rejected";
+            renderWithdrawHistory();
+            renderAdminWithdrawPanel();
+            alert('Withdrawal rejected!');
+        }
+
+        function updateAdminTaskReward() {
+            const val = document.getElementById('input-admin-task-amt').value;
+            dailyTaskRewardAmount = parseFloat(val).toFixed(2);
+            document.getElementById('admin-set-task-reward').innerText = `$${dailyTaskRewardAmount}`;
+            alert(`Daily task reward is now set to $${dailyTaskRewardAmount}!`);
+        }
+
+        function claimDailyTask() {
+            userBalance = (parseFloat(userBalance) + parseFloat(dailyTaskRewardAmount)).toFixed(2);
+            document.getElementById('display-balance').innerText = `$${userBalance}`;
+            alert(`Congratulations! $${dailyTaskRewardAmount} task claimed successfully.`);
+            switchPage('home-section');
+        }
+
+        function adminUpdateBalance() {
+            const newBal = document.getElementById('admin-new-balance').value;
+            userBalance = parseFloat(newBal).toFixed(2);
+            document.getElementById('display-balance').innerText = `$${userBalance}`;
+            alert(`Balance updated to $${userBalance}!`);
+        }
+
+        function sendUserChat() {
+            const input = document.getElementById('user-chat-input');
+            const chatBox = document.getElementById('user-chat-box');
+            const adminChatDisplay = document.getElementById('admin-chat-display');
+            if(input.value.trim() !== '') {
+                chatBox.innerHTML += `<p><b>You:</b> ${input.value}</p>`;
+                adminChatDisplay.innerHTML += `<p><b>User:</b> ${input.value}</p>`;
+                input.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function adminSendChat() {
+            const replyInput = document.getElementById('admin-chat-reply');
+            const chatBox = document.getElementById('user-chat-box');
+            const adminChatDisplay = document.getElementById('admin-chat-display');
+            if(replyInput.value.stream !== '') {
+                adminChatDisplay.innerHTML += `<p><b>Admin:</b> ${replyInput.value}</p>`;
+                chatBox.innerHTML += `<p><b>Admin:</b> ${replyInput.value}</p>`;
+                replyInput.value = '';
+                adminChatDisplay.scrollTop = adminChatDisplay.scrollHeight;
+            }
+        }
+
+        // Initialize fee info on load
+        window.onload = function() {
+            updateWithdrawFeeInfo();
+        };
+    </script>
+</body>
+</html>
